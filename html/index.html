@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <!-- CSS -->
     <link rel="stylesheet" href="../css/index.css">
+    <!-- JavaScript -->
+    <script src="../js/index.js"></script>
+
 
     <title>World's best calendar app!</title>
 </head>
@@ -49,13 +52,14 @@
                 <div class="card text-white bg-primary mb-3 mx-auto" style="max-width: 20rem;">
                     <div class="card-header">Please enter your UserID</div>
                     <div class="card-body">
-                        <form class="card-form">
+                        <form class="card-form" onsubmit="return submitUserID(event)">
                             <fieldset>
                                 <div class="form-group">
-                                    <label class="col-form-label" for="inputDefault">User ID</label>
-                                    <input type="text" class="form-control" placeholder="test" id="inputDefault">
+                                    <label class="col-form-label" for="inputUserID">User ID</label>
+                                    <input type="text" class="form-control" id="inputUserID" name="UserID"
+                                        value="2693148">
                                 </div>
-                                <button type="submit" onclick="" class="btn btn-primary">Submit</button>
+                                <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
                             </fieldset>
                         </form>
                     </div>
@@ -66,14 +70,18 @@
 
     <!-- Main Content -->
     <div id="mainContent" class="container h-100" style="display: none;">
-        <div class="row align-items-center h-100">
-            <div class="col-6 mx-auto">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 ">
                 <div id="actions" class="card text-white bg-primary mb-3 mx-auto" style="max-width: 20rem;">
                     <div class="card-header">Actions</div>
                     <div id="actionsBody" class="card-body">
-
+                        <div class="btn-group-vertical">
+                            <button type="button" id="createEntry" onclick="switchCreateEntry()" class="btn btn-primary">Create Entry</button>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-6 ">
                 <div id="upcomingEvents" class="card text-white bg-primary mb-3 mx-auto" style="max-width: 20rem;">
                     <div class="card-header">Upcoming Events</div>
                     <div id="upcomingEventsBody" class="card-body">
@@ -84,12 +92,31 @@
         </div>
     </div>
 
+    <!-- Create Entry -->
+    <div id="createEvent" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 mx-auto">
+                <div id="createEvent" class="card text-white bg-primary mb-3 mx-auto" style="max-width: 20rem;">
+                    <div class="card-header">Create Event</div>
+                    <div id="createEvent" class="card-body">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
