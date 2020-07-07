@@ -1,7 +1,6 @@
 let user = "";
 
 function submitUserID(e){
-    //prevent page reload on submit
     e.preventDefault();
     //get form input
     user = document.getElementById('inputUserID').value;
@@ -21,10 +20,19 @@ function buildURL(){
     }
 }
 
-function createEvent(e){
-    //prevent page to reload on submit
+function newEvent(e){
     e.preventDefault();
     console.log("create Element");
+    let eventName = document.getElementById('inputEventName').value;
+    let eventLocation = document.getElementById('inputEventLocation').value;
+    let orgMail = document.getElementById('inputEventEmail').value;
+    let startDate = document.getElementById('startdate').value;
+    let endDate = document.getElementById('enddate').value;
+
+    console.log(eventName, eventLocation, orgMail, startDate, endDate);
+    document.getElementById('mainContent').style.display = 'grid';
+    document.getElementById('createEvent').style.display = 'none';
+    return true;
 }
 
 function switchCreateEntry(){

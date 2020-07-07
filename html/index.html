@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -10,6 +10,40 @@
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <!-- CSS -->
     <link rel="stylesheet" href="../css/index.css">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Date-Picker Plugin -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+    <script>
+        //initialise datepicker plugin
+        $(document).ready(function () {
+            var startdate_input = $('input[name="startdate"]'); //our date input has the name "startdate"
+            var enddate_input = $('input[name="enddate"]'); //our date input has the name "startdate"
+            var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
+            startdate_input.datepicker({
+                format: 'yyyy-mm-dd',
+                container: container,
+                todayHighlight: true,
+                autoclose: true,
+            });
+            enddate_input.datepicker({
+                format: 'yyyy-mm-dd',
+                container: container,
+                todayHighlight: true,
+                autoclose: true,
+            });
+        })
+    </script>
     <!-- JavaScript -->
     <script src="../js/index.js"></script>
 
@@ -56,8 +90,7 @@
                             <fieldset>
                                 <div class="form-group">
                                     <label class="col-form-label" for="inputUserID">User ID</label>
-                                    <input type="text" class="form-control" id="inputUserID" name="UserID"
-                                        value="2693148">
+                                    <input type="text" class="form-control" id="inputUserID" value="2693148">
                                 </div>
                                 <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
                             </fieldset>
@@ -76,7 +109,8 @@
                     <div class="card-header">Actions</div>
                     <div id="actionsBody" class="card-body">
                         <div class="btn-group-vertical">
-                            <button type="button" id="createEntry" onclick="switchCreateEntry()" class="btn btn-primary">Create Entry</button>
+                            <button type="button" id="createEntry" onclick="switchCreateEntry()"
+                                class="btn btn-primary">Create Entry</button>
                         </div>
                     </div>
                 </div>
@@ -95,28 +129,54 @@
     <!-- Create Entry -->
     <div id="createEvent" class="container h-100" style="display: none;">
         <div class="row align-items-center h-100 mx-auto">
-            <div class="col-6 mx-auto">
-                <div id="createEvent" class="card text-white bg-primary mb-3 mx-auto" style="max-width: 20rem;">
-                    <div class="card-header">Create Event</div>
-                    <div id="createEvent" class="card-body">
-                        
-                    </div>
+            <div class="card text-white bg-primary mb-3 mx-auto" style="width: 40rem;">
+                <div class="card-header">Create Event</div>
+                <div class="card-body">
+                    <form class="card-form" onsubmit="return newEvent(event)">
+                        <fieldset>
+                            <div class="form-group">
+                                <!-- Name, location, email -->
+                                <label class="col-form-label" for="inputEventName">Eventname</label>
+                                <input type="text" class="form-control" id="inputEventName" name="inputEventName"
+                                    required>
+                                <label class="col-form-label" for="inputEventLocation">Eventlocation</label>
+                                <input type="text" class="form-control" id="inputEventLocation"
+                                    name="inputEventLocation" required>
+                                <label for="inputEventEmail">Organizer email address</label>
+                                <input type="email" class="form-control" id="inputEventEmail" name="inputEventEmail"
+                                    required placeholder="Enter email"
+                                    style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
+                                <label></label>
+                                <!-- additional information -->
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="optionsRadios"
+                                            id="optionsRadios1" value="option1" checked="">
+                                        single day
+                                    </label>
+                                    <br>
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="optionsRadios"
+                                            id="optionsRadios2" value="option2">
+                                        multiple days
+                                        </label>
+                                </div>
+                                <!-- Date -->
+                                <label class="col-form-label" for="startdate">Start date</label>
+                                <input class="form-control" id="startdate" name="startdate" placeholder="DD/MM/YYY"
+                                    type="text" required />
+                                <label class="col-form-label" for="enddate">End date</label>
+                                <input class="form-control" id="enddate" name="enddate" placeholder="DD/MM/YYY"
+                                    type="text" required />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-        crossorigin="anonymous"></script>
 </body>
 
 </html>
