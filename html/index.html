@@ -49,8 +49,6 @@
     <!-- Bootstrap Time Plugin -->
     <link rel="stylesheet" href="../css/clockpicker.css" />
     <script src="../js/clockpicker.js"></script>
-    <!-- JavaScript -->
-    <script src="../js/index.js"></script>
 
 
     <title>World's best calendar app!</title>
@@ -116,6 +114,8 @@
                         <div class="btn-group-vertical">
                             <button type="button" id="createEntry" onclick="switchCreateEntry()"
                                 class="btn btn-primary">Create Entry</button>
+                            <button type="button" id="createEntry" onclick="switchCreateEntry()"
+                                class="btn btn-primary">Create Entry</button>
                         </div>
                     </div>
                 </div>
@@ -161,6 +161,12 @@
         </div>
     </div>
 
+    <div id="timeWarning" class="alert alert-dismissible alert-warning"
+        style="display: none; margin: auto; width: 30%;">
+        <h4 class="alert-heading">Warning!</h4>
+        <p class="mb-0"> Please make sure the times you entered are even possible. </p>
+    </div>
+
     <div id="setEventTime" class="container h-100" style="display: none;">
         <div class="row align-items-center h-100">
             <div class="col-6 mx-auto">
@@ -174,10 +180,48 @@
                                     <label class="col-form-label" for="startdate">Start date</label>
                                     <input class="form-control" id="startdate" name="startdate" placeholder="DD/MM/YYY"
                                         type="text" required />
+
+                                    <div class="custom-control custom-switch">
+                                        <br>
+                                        <input type="checkbox" data-toggle="switch" class="custom-control-input"
+                                            id="multiDay" checked="">
+                                        <label class="custom-control-label" for="multiDay">Multiple days?</label>
+                                    </div>
+                                    <script>
+                                        $("#multiDay").change(function () {
+                                            if ($(this).prop("checked") == true) {
+                                                document.getElementById('allDay').disabled = true;
+                                                document.getElementById('starttime').disabled = true;
+                                                document.getElementById('endtime').disabled = true;
+                                            } else {
+                                                document.getElementById('allDay').disabled = false;
+                                                document.getElementById('starttime').disabled = false;
+                                                document.getElementById('endtime').disabled = false;
+                                            }
+                                        });
+                                    </script>
+                                    <div class="custom-control custom-switch">
+                                        <br>
+                                        <input type="checkbox" class="custom-control-input" id="allDay" checked="">
+                                        <label class="custom-control-label" for="allDay">Whole day?</label>
+                                    </div>
+                                    <script>
+                                        $("#allDay").change(function () {
+                                            if ($(this).prop("checked") == true) {
+                                                document.getElementById('starttime').disabled = true;
+                                                document.getElementById('endtime').disabled = true;
+                                            } else {
+                                                document.getElementById('starttime').disabled = false;
+                                                document.getElementById('endtime').disabled = false;
+                                            }
+                                        });
+                                    </script>
+
                                     <label class="col-form-label" for="starttime">Start time</label>
                                     <div class="input-group clockpicker" data-placement="top" data-align="top"
                                         data-autoclose="true">
-                                        <input type="text" id="starttime" class="form-control" pattern="[0-9]{2}:[0-9]{2}" placeholder="hh:mm" required>
+                                        <input type="text" id="starttime" class="form-control"
+                                            pattern="[0-9]{2}:[0-9]{2}" placeholder="hh:mm" required>
                                     </div>
                                     <label class="col-form-label" for="enddate">End date</label>
                                     <input class="form-control" id="enddate" name="enddate" placeholder="DD/MM/YYY"
@@ -185,7 +229,8 @@
                                     <label class="col-form-label" for="endtime">End time</label>
                                     <div class="input-group clockpicker" data-placement="top" data-align="top"
                                         data-autoclose="true">
-                                        <input type="text" id="endtime" class="form-control" pattern="[0-9]{2}:[0-9]{2}" placeholder="hh:mm" required>
+                                        <input type="text" id="endtime" class="form-control" pattern="[0-9]{2}:[0-9]{2}"
+                                            placeholder="hh:mm" required>
                                     </div>
                                     <!-- add clockpicker script -->
                                     <script type="text/javascript">
@@ -201,6 +246,9 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript -->
+    <script src="../js/index.js"></script>
 
 </body>
 
