@@ -1,6 +1,22 @@
 let user = "";
 let url;
-let eventName, eventLocation, orgMail, startDate, startTime, endDate, endTime;
+let eventName, eventLocation, orgMail, startDate, startTime, endDate, endTime, status, website, extra, image;
+
+//Vorlesungsteststuff
+// let pos, lat, long;
+// function locate(){
+//     pos = navigator.geolocation.getCurrentPosition(
+//         (e) => {
+//             success(e);
+//         }
+//     );
+// }
+// function success(position){
+//     lat = position.coords.latitude;
+//     long = position.coords.longitude;
+//     document.getElementById('Unistuff').innerText = lat + ", " + long;
+// }
+//
 
 function submitUserID(e) {
     e.preventDefault();
@@ -12,13 +28,7 @@ function submitUserID(e) {
     document.getElementById('mainContent').style.display = 'grid';
     //build the URL to the Webservice
     buildURL();
-    //test getting the JSON
-    fetch(url)
-        .then(res => res.json())
-        .then((out) => {
-            console.log(out);
-        })
-        .catch(err => { throw err });
+    getData();
 }
 
 function buildURL() {
@@ -33,6 +43,17 @@ function switchCreateEntry() {
     document.getElementById('mainContent').style.display = 'none';
     document.getElementById('createEvent').style.display = 'grid';
     document.getElementById('timeWarning').style.display = 'none';
+}
+
+function switchCategories() {
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('categoryManagement').style.display = 'grid';
+}
+
+function switchToMain(){
+    document.getElementById('loginArea').style.display = 'none';
+    document.getElementById('categoryManagement').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'grid';
 }
 
 function newEvent(e) {
@@ -58,9 +79,10 @@ function setTime(e) {
     endTime = document.getElementById('endtime').value;
     if (validateDate()) {
 
-        document.getElementById('mainContent').style.display = 'grid';
+        document.getElementById('mainContent').style.display = 'none';
         document.getElementById('setEventTime').style.display = 'none';
         document.getElementById('timeWarning').style.display = 'none';
+        document.getElementById('additionalEventinfo').style.display = 'grid';
 
         return true;
     } else {
@@ -139,25 +161,156 @@ function validateDate() {
     }
 }
 
-function buildAndSubmitJSON(){
-    let startT = startDate+'T'+startTime;
-    let endT = endDate+'T'+endTime;
+function getExtras(e) {
+    e.preventDefault();
+    console.log('getExtras');
+    status = document.getElementById('status').value;
+    website = document.getElementById('webpage').value;
+    extra = document.getElementById('extra').value;
+
+    if (image != undefined) {
+        console.log(image);
+    } else {
+        image = null;
+    }
+    console.log(image);
+
+    if (extra.length > 2000) {
+        return false;
+    }
+    buildAndSubmitJSON();
+
+    document.getElementById('additionalEventinfo').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'grid';
+}
+
+function encode() {
+    let filesSelected = document.getElementById('image').files;
+    if (filesSelected.length > 0) {
+        console.log(filesSelected[0]);
+
+    }
+}
+
+function addCategory(e) {
+    e.preventDefault();
+    let categoryName = document.getElementById('newCategory').value;
+    let select = document.getElementById('categorySelect');
+    let table = document.getElementById('table');
+    if (categoryName == undefined) {
+        return false;
+    }
+    let data = {
+        "name": categoryName
+    }
+    fetch(`${url}/categories`, {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then((response) => response.json()).then((out) => {
+        select.innerHTML += `<option id="Select${out.id}" value="${out.id}">${out.name}</option>`;
+        let tr = document.createElement('tr');
+        tr.id = `CategoryList${out.id}`;
+
+        let td1 = document.createElement('td');
+        let td2 = document.createElement('td');
+        let name = document.createTextNode(out.name);
+
+        let button = document.createElement('button');
+        button.innerText = 'delete';
+        button.classList.add('btn');
+        button.classList.add('btn-primary');
+        button.classList.add('btn-sm');
+        button.onclick = function(){
+            fetch(`${url}/categories/${out.id}`,{
+                method:'DELETE',
+            }).catch(err=>{
+                console.log(err);
+            });
+            document.getElementById(`CategoryList${out.id}`).style.display = 'none';
+            let del = document.getElementById(`Select${out.id}`);
+            del.remove();
+        }
+
+        td1.appendChild(name);
+        td2.appendChild(button);
+
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+
+        table.appendChild(tr);
+    });
+}
+
+function buildAndSubmitJSON() {
+    let startT = startDate + 'T' + startTime;
+    let endT = endDate + 'T' + endTime;
     let sending = {
         "title": eventName,
         "location": eventLocation,
         "organizer": orgMail,
         "start": startT,
         "end": endT,
-        "status": "Busy",
+        "status": status,
         "allday": false,
-        "webpage": " http://www.radicalsimplicity.com/",
-        "imagedata": "data:ContentType;base64,ImageContent",
-        "categories": [
-            {
-                "id": 3
-            }
-        ],
-        "extra": null
+        "webpage": website,
+        "imagedata": image,
+        "categories": [],
+        "extra": extra
     }
-    
+    // fetch(`${url}/events`, {
+    //     method: "post",
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(sending)
+    // }).then((response) => {
+    //     console.log(response);
+    // });
 }
+
+function getData() {
+    let select = document.getElementById('categorySelect');
+    let table = document.getElementById('table');
+    table.innerHTML = '<tr><th>Name</th><th>Delete</th></tr>';
+    //get categories
+    fetch(`${url}/categories`,{cache: 'no-store'}).then((res) => res.json()).then((out) => {
+        out.forEach(element => {
+            select.innerHTML += `<option value="${element.id}">${element.name}</option>`;
+            let tr = document.createElement('tr');
+            tr.id = `CategoryList${element.id}`;
+
+            let td1 = document.createElement('td');
+            let td2 = document.createElement('td');
+            let name = document.createTextNode(element.name);
+
+            let button = document.createElement('button');
+            button.innerText = 'delete';
+            button.classList.add('btn');
+            button.classList.add('btn-primary');
+            button.classList.add('btn-sm');
+            button.onclick = function(){
+                fetch(`${url}/categories/${element.id}`,{
+                    method:'DELETE',
+                }).catch(err=>{
+                    console.log(err);
+                });
+                document.getElementById(`CategoryList${element.id}`).style.display = 'none';
+                let del = document.getElementById(`Select${out.id}`);
+                del.remove();    
+            }
+
+            td1.appendChild(name);
+            td2.appendChild(button);
+
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+
+            table.appendChild(tr);
+        });
+    }).catch(err => console.log(err));
+}    

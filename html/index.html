@@ -81,8 +81,22 @@
         </div>
     </nav>
 
-    <!--Login Area-->
+    <!-- Unistuff -->
+    <!-- <div id="test" class="container h-100">
+        <div class="row align-items-center h-100">
+            <div class="col-6 mx-auto">
+                <div class="card text-white bg-primary mb-3 mx-auto" style="max-width: 20rem;">
+                    <div class="card-header">Location</div>
+                    <div class="card-body">
+                        <button onclick="locate()">locate</button>
+                        <p id="Unistuff"></p>
+                    </div>
+                </div>
+            </div>
+        </div> -->
 
+
+    <!--Login Area-->
     <div id="loginArea" class="container h-100">
         <div class="row align-items-center h-100">
             <div class="col-6 mx-auto">
@@ -114,8 +128,8 @@
                         <div class="btn-group-vertical">
                             <button type="button" id="createEntry" onclick="switchCreateEntry()"
                                 class="btn btn-primary">Create Entry</button>
-                            <button type="button" id="createEntry" onclick="switchCreateEntry()"
-                                class="btn btn-primary">Create Entry</button>
+                            <button type="button" id="createEntry" onclick="switchCategories()"
+                                class="btn btn-primary">Manage Categories</button>
                         </div>
                     </div>
                 </div>
@@ -241,6 +255,86 @@
                                 <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
                             </fieldset>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="additionalEventinfo" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100">
+            <div class="col-6 mx-auto">
+                <div id="actions" class="card text-white bg-primary mb-3 mx-auto" style="max-width: 20rem;">
+                    <div class="card-header">Additional Infos</div>
+                    <div id="actionsBody" class="card-body">
+                        <form class="card-form" onsubmit="return getExtras(event)">
+                            <fieldset>
+                                <div class="form-group">
+                                    <!-- status -->
+                                    <div class="form-group">
+                                        <label for="status">Select your staus during this event</label>
+                                        <select id="status" class="custom-select" required>
+                                            <option value="Free">Free</option>
+                                            <option value="Busy">Busy</option>
+                                            <option value="Tentative">Tentative</option>
+                                        </select>
+                                    </div>
+                                    <!-- webpage -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="webpage">Enter a associated webpage</label>
+                                        <input type="text" class="form-control" placeholder="www.example.com"
+                                            id="webpage">
+                                    </div>
+                                    <!-- imageurl/image -->
+                                    <!-- <div class="form-group">
+                                        <label class="col-form-label">Choose image to upload</label> <br>
+                                        <div class="input-group mb-3">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input img" accept="image/png, image/jpeg" onchange="encode()" id="image">
+                                                <label class="custom-file-label" for="image">Image</label>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <!-- categories -->
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="newCategory">New Category</label>
+                                            <input type="text" class="form-control" placeholder="category name"
+                                                id="newCategory">
+                                        </div>
+                                        <button onclick="addCategory(event)">Create new category</button> <br>
+                                        <div class="form-group">
+                                            <label for="categorySelect">Example multiple select</label>
+                                            <select multiple="" class="form-control" id="categorySelect">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- comment -->
+                                    <div class="form-group">
+                                        <label for="extra">Comment/description</label>
+                                        <textarea class="form-control" id="extra" maxlength="2000" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category management -->
+    <div id="categoryManagement" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 ">
+                <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 25rem;">
+                    <div class="card-header">Manage categories</div>
+                    <div id="manageCategoriesBody" class="card-body">
+                        <table id="table" class="table table-hover">
+                            <tr><th>Name</th><th>Delete</th></tr>
+                        </table>
+                        <button class="btn btn-primary" onclick="switchToMain()">Back</button>
                     </div>
                 </div>
             </div>
