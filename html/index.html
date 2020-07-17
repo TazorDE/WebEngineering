@@ -107,7 +107,7 @@
                             <fieldset>
                                 <div class="form-group">
                                     <label class="col-form-label" for="inputUserID">User ID</label>
-                                    <input type="text" class="form-control" id="inputUserID" value="2693148">
+                                    <input type="text" class="form-control" id="inputUserID" value="2693148" required>
                                 </div>
                                 <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
                             </fieldset>
@@ -122,23 +122,18 @@
     <div id="mainContent" class="container h-100" style="display: none;">
         <div class="row align-items-center h-100 mx-auto">
             <div class="col-6 ">
-                <div id="actions" class="card text-white bg-primary mb-3 mx-auto" style="max-width: 20rem;">
+                <div id="actions" class="card text-white bg-primary mb-3 mx-auto" style="width: 13rem;">
                     <div class="card-header">Actions</div>
                     <div id="actionsBody" class="card-body">
                         <div class="btn-group-vertical">
                             <button type="button" id="createEntry" onclick="switchCreateEntry()"
-                                class="btn btn-primary">Create Entry</button>
+                                class="btn btn-primary">Create Entry</button> <br>
                             <button type="button" id="createEntry" onclick="switchCategories()"
-                                class="btn btn-primary">Manage Categories</button>
+                                class="btn btn-primary">Manage Categories</button><br>
+                            <button type="button" id="createEntry" onclick="showEvents(), getEvents()"
+                                class="btn btn-primary">Show
+                                events</button><br>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 ">
-                <div id="upcomingEvents" class="card text-white bg-primary mb-3 mx-auto" style="max-width: 20rem;">
-                    <div class="card-header">Upcoming Events</div>
-                    <div id="upcomingEventsBody" class="card-body">
-
                     </div>
                 </div>
             </div>
@@ -195,35 +190,43 @@
                                     <input class="form-control" id="startdate" name="startdate" placeholder="DD/MM/YYY"
                                         type="text" required />
 
-                                    <div class="custom-control custom-switch">
+                                    <!-- <div class="custom-control custom-switch">
                                         <br>
                                         <input type="checkbox" data-toggle="switch" class="custom-control-input"
-                                            id="multiDay" checked="">
+                                            id="multiDay">
                                         <label class="custom-control-label" for="multiDay">Multiple days?</label>
-                                    </div>
-                                    <script>
+                                    </div> -->
+                                    <!-- <script>
                                         $("#multiDay").change(function () {
                                             if ($(this).prop("checked") == true) {
                                                 document.getElementById('allDay').disabled = true;
+                                                document.getElementById('allDay').value = true;
                                                 document.getElementById('starttime').disabled = true;
+                                                document.getElementById('starttime').value = '00:00';
                                                 document.getElementById('endtime').disabled = true;
+                                                document.getElementById('endtime').value = '23:59';
+
                                             } else {
                                                 document.getElementById('allDay').disabled = false;
+                                                document.getElementById('allDay').value = false;
                                                 document.getElementById('starttime').disabled = false;
                                                 document.getElementById('endtime').disabled = false;
                                             }
                                         });
-                                    </script>
+                                    </script> -->
                                     <div class="custom-control custom-switch">
                                         <br>
-                                        <input type="checkbox" class="custom-control-input" id="allDay" checked="">
+                                        <input type="checkbox" class="custom-control-input" id="allDay">
                                         <label class="custom-control-label" for="allDay">Whole day?</label>
                                     </div>
                                     <script>
                                         $("#allDay").change(function () {
                                             if ($(this).prop("checked") == true) {
                                                 document.getElementById('starttime').disabled = true;
+                                                document.getElementById('starttime').value = '00:00';
                                                 document.getElementById('endtime').disabled = true;
+                                                document.getElementById('endtime').value = '23:59';
+                                                document.getElementById('enddate').value = document.getElementById('startdate').value;
                                             } else {
                                                 document.getElementById('starttime').disabled = false;
                                                 document.getElementById('endtime').disabled = false;
@@ -286,15 +289,16 @@
                                             id="webpage">
                                     </div>
                                     <!-- imageurl/image -->
-                                    <!-- <div class="form-group">
+                                    <div class="form-group">
                                         <label class="col-form-label">Choose image to upload</label> <br>
                                         <div class="input-group mb-3">
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input img" accept="image/png, image/jpeg" onchange="encode()" id="image">
+                                                <input type="file" class="custom-file-input img"
+                                                    accept="image/png, image/jpeg" onchange="encode()" id="image">
                                                 <label class="custom-file-label" for="image">Image</label>
                                             </div>
                                         </div>
-                                    </div> -->
+                                    </div>
                                     <!-- categories -->
                                     <div class="form-group">
                                         <div class="form-group">
@@ -302,9 +306,10 @@
                                             <input type="text" class="form-control" placeholder="category name"
                                                 id="newCategory">
                                         </div>
-                                        <button onclick="addCategory(event)">Create new category</button> <br>
+                                        <button class="btn btn-primary btn-sm" style="margin: auto;" onclick="addCategory(event, 'newCategory')">Create new category</button>
+                                        <br>
                                         <div class="form-group">
-                                            <label for="categorySelect">Example multiple select</label>
+                                            <label for="categorySelect">CTRL+click to choose one or multiple categories</label>
                                             <select multiple="" class="form-control" id="categorySelect">
                                             </select>
                                         </div>
@@ -331,10 +336,78 @@
                 <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 25rem;">
                     <div class="card-header">Manage categories</div>
                     <div id="manageCategoriesBody" class="card-body">
+                        <label class="col-form-label" for="newCategory">New Category</label>
+                        <input type="text" class="form-control" placeholder="category name" id="newCategoryManager">
+                        <button class="btn btn-primary btn-sm" onclick="addCategory(event,'newCategoryManager')">Create
+                            new category</button> <br><br>
+
                         <table id="table" class="table table-hover">
-                            <tr><th>Name</th><th>Delete</th></tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Delete</th>
+                            </tr>
                         </table>
                         <button class="btn btn-primary" onclick="switchToMain()">Back</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event List -->
+    <div id="eventList" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 ">
+                <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 25rem;">
+                    <div class="card-header">Event list</div>
+                    <div id="manageCategoriesBody" class="card-body">
+                        <table id="tableEventList" class="table table-hover">
+                            <tr>
+                                <th>Name</th>
+                                <th>more</th>
+                                <th>Delete</th>
+                            </tr>
+                        </table>
+                        <button class="btn btn-primary" onclick="switchToMain()">Back</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="event" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 ">
+                <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 35rem;">
+                    <div class="card-header">Event list</div>
+                    <div id="eventBody" class="card-body">
+                        <table id="eventTable" class="table table-hover">
+                            <tr>
+                                <th scope="col">Description</th>
+                                <th scope="col">Content</th>
+                            </tr>
+                        </table>
+                        <button class="btn btn-primary" onclick="backToEvents()">Back</button>
+                        <button class="btn btn-primary" id="eventEdit">Edit this event</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="manage" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 ">
+                <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 25rem;">
+                    <div class="card-header">Edit Event</div>
+                    <div id="categoryBody" class="card-body">
+                        <table id="manageTable" class="table table-hover">
+                            <tr>
+                                <th scope="col">Description</th>
+                                <th scope="col">Edit content</th>
+                            </tr>
+                        </table>
+                        <button class="btn btn-primary" onclick="backToEvents()">Back</button>
                     </div>
                 </div>
             </div>
