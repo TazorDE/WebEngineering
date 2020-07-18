@@ -28,7 +28,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
     <script>
         //initialise datepicker plugin
-        $(document).ready(function () {
+        $(document).ready(function initDatepicker() {
             var startdate_input = $('input[name="startdate"]'); //our date input has the name "startdate"
             var enddate_input = $('input[name="enddate"]'); //our date input has the name "startdate"
             var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
@@ -187,7 +187,7 @@
                                 <div class="form-group">
                                     <!-- Date and Time -->
                                     <label class="col-form-label" for="startdate">Start date</label>
-                                    <input class="form-control" id="startdate" name="startdate" placeholder="DD/MM/YYY"
+                                    <input class="form-control" id="startdate" name="startdate" placeholder="DD/MM/YYYY"
                                         type="text" required />
 
                                     <!-- <div class="custom-control custom-switch">
@@ -288,7 +288,7 @@
                                         <input type="text" class="form-control" placeholder="www.example.com"
                                             id="webpage">
                                     </div>
-                                    <!-- imageurl/image -->
+                                    <!-- image -->
                                     <div class="form-group">
                                         <label class="col-form-label">Choose image to upload</label> <br>
                                         <div class="input-group mb-3">
@@ -370,7 +370,6 @@
                             </tr>
                         </table>
                         <button class="btn btn-primary" onclick="switchToMain()">Back</button>
-
                     </div>
                 </div>
             </div>
@@ -398,16 +397,21 @@
     <div id="manage" class="container h-100" style="display: none;">
         <div class="row align-items-center h-100 mx-auto">
             <div class="col-6 ">
-                <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 25rem;">
+                <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 40rem;">
                     <div class="card-header">Edit Event</div>
                     <div id="categoryBody" class="card-body">
-                        <table id="manageTable" class="table table-hover">
-                            <tr>
-                                <th scope="col">Description</th>
-                                <th scope="col">Edit content</th>
-                            </tr>
-                        </table>
-                        <button class="btn btn-primary" onclick="backToEvents()">Back</button>
+                        <form class="card-form">
+                            <fieldset>
+                                <table id="manageTable" class="table table-hover">
+                                    <tr>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Edit content</th>
+                                        <th scope="col"> </th>
+                                    </tr>
+                                </table>    
+                            </fieldset>
+                        </form>
+                        <button class="btn btn-primary" onclick="backToEvent()">Back</button>
                     </div>
                 </div>
             </div>

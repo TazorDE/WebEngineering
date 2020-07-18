@@ -1,4 +1,4 @@
-let user = ""; 
+let user = "";
 let url, image;
 let eventName, eventLocation, orgMail, startDate, startTime, endDate, endTime, allday, status, website, extra, categories;
 
@@ -48,7 +48,6 @@ function showEvents() {
 
 function backToEvents() {
     document.getElementById('eventList').style.display = 'grid';
-    document.getElementById('categoryEvent').style.display = 'none';
     document.getElementById('event').style.display = 'none';
 }
 
@@ -169,7 +168,7 @@ function getExtras(e) {
     extra = document.getElementById('extra').value;
 
     console.log("category " + category);
-    if(category != null){
+    if (category != null) {
         category.forEach(e => {
             let data = {
                 "id": e
@@ -190,10 +189,10 @@ function getExtras(e) {
 function encode() {
     console.log(document.getElementById('image').files);
     let file = document.getElementById('image').files;
-    if (file.length > 0){
+    if (file.length > 0) {
         let fileLoaded = file[0];
         const reader = new FileReader();
-        reader.onloadend = function(e){
+        reader.onloadend = function (e) {
             image = e.target.result;
         }
         reader.readAsDataURL(fileLoaded);
@@ -328,7 +327,7 @@ function getData() {
     }).catch(err => console.log(err));
 }
 
-function getEvents(){
+function getEvents() {
     let tableEventList = document.getElementById('tableEventList');
     tableEventList.innerHTML = '<tr><th>Name</th><th>more</th><th>Delete</th></tr>';
     //get events
@@ -441,7 +440,7 @@ function getEvents(){
                     row.appendChild(cell2);
                     eventTable.appendChild(row);
                     //event website
-                    if(out.webpage != null){
+                    if (out.webpage != null) {
                         row = document.createElement('tr');
                         row.id = out.webpage;
                         cell1 = document.createElement('th');
@@ -451,9 +450,9 @@ function getEvents(){
                         title = document.createTextNode('Webpage');
                         content = document.createTextNode(out.webpage);
                         anchor.appendChild(content);
-                        if(out.webpage.substr(0,4) == 'http'){
+                        if (out.webpage.substr(0, 4) == 'http') {
                             anchor.href = out.webpage;
-                        }else{
+                        } else {
                             anchor.href = `https://${out.webpage}`;
                         }
                         anchor.target = '_blank';
@@ -477,7 +476,7 @@ function getEvents(){
                     row.appendChild(cell2);
                     eventTable.appendChild(row);
                     //event categories
-                    if(out.categories.length > 0){
+                    if (out.categories.length > 0) {
                         row = document.createElement('tr');
                         cell1 = document.createElement('th');
                         cell1.setAttribute('scope', 'row');
@@ -497,7 +496,7 @@ function getEvents(){
                         row.appendChild(cell1);
                         row.appendChild(cell2);
                         eventTable.appendChild(row);
-                    }else{
+                    } else {
                         row = document.createElement('tr');
                         cell1 = document.createElement('th');
                         cell1.setAttribute('scope', 'row');
@@ -512,7 +511,7 @@ function getEvents(){
                         eventTable.appendChild(row);
                     }
                     //event image
-                    if(out.imageurl != null){
+                    if (out.imageurl != null) {
                         row = document.createElement('tr');
                         row.id = out.imageurl;
                         cell1 = document.createElement('th');
@@ -529,11 +528,329 @@ function getEvents(){
                         row.appendChild(cell2);
                         eventTable.appendChild(row);
                     }
-                   document.getElementById('eventEdit').onclick = function(){
+                    document.getElementById('eventEdit').onclick = function () {
                         //go to event edit div
                         document.getElementById('manage').style.display = 'grid';
                         document.getElementById('event').style.display = 'none';
-                   }
+                        //fill editing table
+                        let manageTable = document.getElementById('manageTable');
+                        manageTable.innerHTML = '<tr><th scope="col">Description</th><th scope="col">Edit content</th><th scope="col"></th></tr>';
+                        //Title
+                        row = document.createElement('tr');
+                        cell1 = document.createElement('th');
+                        cell1.setAttribute('scope', 'row');
+                        cell2 = document.createElement('td');
+                        cell1.appendChild(document.createTextNode('Event title:'));
+                        let updateInput = document.createElement('input');
+                        updateInput.classList.add('form-control');
+                        updateInput.setAttribute('required', 'true');
+                        updateInput.setAttribute('id', 'updatedTitle');
+                        updateInput.setAttribute('value', out.title);
+                        cell2.appendChild(updateInput);
+                        row.appendChild(cell1);
+                        row.appendChild(cell2);
+                        manageTable.appendChild(row);
+                        //location
+                        row = document.createElement('tr');
+                        cell1 = document.createElement('th');
+                        cell1.setAttribute('scope', 'row');
+                        cell2 = document.createElement('td');
+                        cell1.appendChild(document.createTextNode('Event location:'));
+                        updateInput = document.createElement('input');
+                        updateInput.classList.add('form-control');
+                        updateInput.setAttribute('required', 'true');
+                        updateInput.setAttribute('id', 'updatedLocation');
+                        updateInput.setAttribute('value', out.location);
+                        cell2.appendChild(updateInput);
+                        row.appendChild(cell1);
+                        row.appendChild(cell2);
+                        manageTable.appendChild(row);
+                        //organizer
+                        row = document.createElement('tr');
+                        cell1 = document.createElement('th');
+                        cell1.setAttribute('scope', 'row');
+                        cell2 = document.createElement('td');
+                        cell1.appendChild(document.createTextNode('Event organizer:'));
+                        updateInput = document.createElement('input');
+                        updateInput.classList.add('form-control');
+                        updateInput.setAttribute('required', 'true');
+                        updateInput.setAttribute('id', 'updatedOrganizer');
+                        updateInput.setAttribute('value', out.organizer);
+                        cell2.appendChild(updateInput);
+                        row.appendChild(cell1);
+                        row.appendChild(cell2);
+                        manageTable.appendChild(row);
+                        //starttime
+                        row = document.createElement('tr');
+                        cell1 = document.createElement('th');
+                        cell1.setAttribute('scope', 'row');
+                        cell2 = document.createElement('td');
+                        cell3 = document.createElement('td');
+                        cell1.appendChild(document.createTextNode('Start time:'));
+                        updateInput = document.createElement('input');
+                        updateInput.classList.add('form-control');
+                        updateInput.setAttribute('id', 'updateStartdate');
+                        updateInput.setAttribute('name', 'startdate');
+                        updateInput.setAttribute('placeholder', 'DD/MM/YYYY');
+                        updateInput.setAttribute('value', out.start.substr(0,10));
+                        updateInput.setAttribute('required','true');
+                        updateTimeDiv = document.createElement('div');
+                        updateTimeDiv.classList.add('input-group');
+                        updateTimeDiv.classList.add('clockpicker');
+                        updateTimeDiv.setAttribute('data-placement','top');
+                        updateTimeDiv.setAttribute('data-align','top');
+                        updateTimeDiv.setAttribute('data-autoclose','true');
+                        updateTimeInput = document.createElement('input');
+                        updateTimeInput.setAttribute('type', 'text');
+                        updateTimeInput.setAttribute('id','starttime');
+                        updateTimeInput.classList.add('form-control');
+                        updateTimeInput.setAttribute('pattern', '[0-9]{2}:[0-9]{2}');
+                        updateTimeInput.setAttribute('placeholder','hh:mm');
+                        updateTimeInput.setAttribute('required','true');
+                        updateTimeInput.setAttribute('value',out.start.substr(11,5));
+                        updateTimeDiv.appendChild(updateTimeInput);
+                        cell2.appendChild(updateInput);
+                        cell3.appendChild(updateTimeDiv);
+                        row.appendChild(cell1);
+                        row.appendChild(cell2);
+                        row.appendChild(cell3);
+                        manageTable.appendChild(row);
+                        //enddime
+                        row = document.createElement('tr');
+                        cell1 = document.createElement('th');
+                        cell1.setAttribute('scope', 'row');
+                        cell2 = document.createElement('td');
+                        cell3 = document.createElement('td');
+                        cell1.appendChild(document.createTextNode('End time:'));
+                        updateInput = document.createElement('input');
+                        updateInput.classList.add('form-control');
+                        updateInput.setAttribute('id', 'updateEnddate');
+                        updateInput.setAttribute('name', 'enddate');
+                        updateInput.setAttribute('placeholder', 'DD/MM/YYYY');
+                        updateInput.setAttribute('value', out.end.substr(0,10));
+                        updateInput.setAttribute('required','true');
+                        updateTimeDiv = document.createElement('div');
+                        updateTimeDiv.classList.add('input-group');
+                        updateTimeDiv.classList.add('clockpicker');
+                        updateTimeDiv.setAttribute('data-placement','top');
+                        updateTimeDiv.setAttribute('data-align','top');
+                        updateTimeDiv.setAttribute('data-autoclose','true');
+                        updateTimeInput = document.createElement('input');
+                        updateTimeInput.setAttribute('type', 'text');
+                        updateTimeInput.setAttribute('id','endtime');
+                        updateTimeInput.classList.add('form-control');
+                        updateTimeInput.setAttribute('pattern', '[0-9]{2}:[0-9]{2}');
+                        updateTimeInput.setAttribute('placeholder','hh:mm');
+                        updateTimeInput.setAttribute('required','true');
+                        updateTimeInput.setAttribute('value',out.end.substr(11,5));
+                        updateTimeDiv.appendChild(updateTimeInput);
+                        cell2.appendChild(updateInput);
+                        cell3.appendChild(updateTimeDiv);
+                        row.appendChild(cell1);
+                        row.appendChild(cell2);
+                        row.appendChild(cell3);
+                        manageTable.appendChild(row);
+                        initDatepicker();
+                        $('.clockpicker').clockpicker(); 
+                        //availability
+                        row = document.createElement('tr');
+                        cell1 = document.createElement('th');
+                        cell1.setAttribute('scope', 'row');
+                        cell2 = document.createElement('td');
+                        cell1.appendChild(document.createTextNode('Event availability:'));
+                        updateInput = document.createElement('select');
+                        updateInput.classList.add('custom-select');
+                        updateInput.setAttribute('required', 'true');
+                        updateInput.setAttribute('id', 'updatedStatus');
+                        if(out.status == 'Free'){
+                            updateInput.innerHTML += '<option value="Free" selected>Free</option>';
+                            updateInput.innerHTML += '<option value="Busy">Busy</option>';
+                            updateInput.innerHTML += '<option value="Tentative">Tentative</option>';    
+                        }else if(out.status == 'Busy'){
+                            updateInput.innerHTML += '<option value="Free">Free</option>';
+                            updateInput.innerHTML += '<option value="Busy" selected>Busy</option>';
+                            updateInput.innerHTML += '<option value="Tentative">Tentative</option>';    
+                        }else if(out.status == 'Tentative'){
+                            updateInput.innerHTML += '<option value="Free">Free</option>';
+                            updateInput.innerHTML += '<option value="Busy">Busy</option>';
+                            updateInput.innerHTML += '<option value="Tentative"selected>Tentative</option>';    
+                        }
+                        cell2.appendChild(updateInput);
+                        row.appendChild(cell1);
+                        row.appendChild(cell2);
+                        manageTable.appendChild(row);
+                        //webpage
+                        if (out.webpage != null) {
+                            row = document.createElement('tr');
+                            cell1 = document.createElement('th');
+                            cell1.setAttribute('scope', 'row');
+                            cell2 = document.createElement('td');
+                            cell1.appendChild(document.createTextNode('Event website:'));
+                            updateInput = document.createElement('input');
+                            updateInput.classList.add('form-control');
+                            updateInput.setAttribute('id', 'updatedWebsite');
+                            updateInput.setAttribute('value', out.webpage);
+                            cell2.appendChild(updateInput);
+                            row.appendChild(cell1);
+                            row.appendChild(cell2);
+                            manageTable.appendChild(row);
+                        } else {
+                            row = document.createElement('tr');
+                            cell1 = document.createElement('th');
+                            cell1.setAttribute('scope', 'row');
+                            cell2 = document.createElement('td');
+                            cell1.appendChild(document.createTextNode('Event website:'));
+                            updateInput = document.createElement('input');
+                            updateInput.classList.add('form-control');
+                            updateInput.setAttribute('id', 'updatedWebsite');
+                            cell2.appendChild(updateInput);
+                            row.appendChild(cell1);
+                            row.appendChild(cell2);
+                            manageTable.appendChild(row);
+                        }
+                        //extra/information/comment
+                        console.log('extra: '+ out.extra);
+                        if (out.extra != null) {
+                            row = document.createElement('tr');
+                            cell1 = document.createElement('th');
+                            cell1.setAttribute('scope', 'row');
+                            cell2 = document.createElement('td');
+                            cell1.appendChild(document.createTextNode('Event Information:'));
+                            updateInput = document.createElement('textarea');
+                            updateInput.classList.add('form-control');
+                            updateInput.setAttribute('id', 'updatedExtra');
+                            updateInput.appendChild(document.createTextNode(out.extra));
+                            updateInput.setAttribute('maxlength', '2000');
+                            cell2.appendChild(updateInput);
+                            row.appendChild(cell1);
+                            row.appendChild(cell2);
+                            manageTable.appendChild(row);
+                        } else {
+                            row = document.createElement('tr');
+                            cell1 = document.createElement('th');
+                            cell1.setAttribute('scope', 'row');
+                            cell2 = document.createElement('td');
+                            cell1.appendChild(document.createTextNode('Event website:'));
+                            updateInput = document.createElement('textarea');
+                            updateInput.classList.add('form-control');
+                            updateInput.setAttribute('id', 'updatedExtra');
+                            updateInput.setAttribute('maxlength', '2000');
+                            cell2.appendChild(updateInput);
+                            row.appendChild(cell1);
+                            row.appendChild(cell2);
+                            manageTable.appendChild(row);
+                        }
+                        //categories
+                        if(out.categories.length > 0){
+                            row = document.createElement('tr');
+                            cell1 = document.createElement('th');
+                            cell1.setAttribute('scope', 'row');
+                            cell2 = document.createElement('td');
+                            cell33 = document.createElement('td');
+                            cell1.appendChild(document.createTextNode('Event categories:'));
+                            updateInput = document.createElement('select');
+                            updateInput.classList.add('form-control');
+                            updateInput.setAttribute('id', 'updatedCategories');
+                            updateInput.setAttribute('multiple', '');
+                            fetch(`${url}/categories`, { cache: 'no-cache' }).then((res) => res.json()).then((ret) => {
+                                ret.forEach(element => {
+                                    document.getElementById('updatedCategories').innerHTML += `<option value="${element.id}">${element.name}</option>`;
+                                    out.categories.forEach((e)=>{
+                                        if(e.id == element.id){
+                                            cell33.appendChild(document.createTextNode(`${e.name} `));
+                                        }
+                                    });
+                                }
+                            )});
+                            cell2.appendChild(updateInput);
+                            row.appendChild(cell1);
+                            row.appendChild(cell2);
+                            row.appendChild(cell33);
+                            manageTable.appendChild(row);
+                        }else{
+                            row = document.createElement('tr');
+                            cell1 = document.createElement('th');
+                            cell1.setAttribute('scope', 'row');
+                            cell2 = document.createElement('td');
+                            cell1.appendChild(document.createTextNode('Event categories:'));
+                            updateInput = document.createElement('select');
+                            updateInput.classList.add('form-control');
+                            updateInput.setAttribute('id', 'updatedCategories');
+                            updateInput.setAttribute('multiple', '');
+                            fetch(`${url}/categories`, { cache: 'no-cache' }).then((res) => res.json()).then((out) => {
+                                out.forEach(element => {
+                                    document.getElementById('updatedCategories').innerHTML += `<option value="${element.id}">${element.name}</option>`;
+                                }
+                            )});
+                            cell2.appendChild(updateInput);
+                            row.appendChild(cell1);
+                            row.appendChild(cell2);
+                            manageTable.appendChild(row);
+                        }
+                        //image
+                        if(out.imageurl != null){
+                            row = document.createElement('tr');
+                            cell1 = document.createElement('th');
+                            cell1.setAttribute('scope', 'row');
+                            cell2 = document.createElement('td');
+                            cell3 = document.createElement('td');
+                            cell1.appendChild(document.createTextNode('Image:'));
+                            let imageDiv = document.createElement('div');
+                            imageDiv.classList.add('custom-file'); 
+                            updateInput = document.createElement('input');
+                            updateInput.classList.add('custom-file-input');
+                            updateInput.classList.add('img');
+                            updateInput.setAttribute('accept', 'image/png, image/jpeg');
+                            updateInput.setAttribute('type', 'file');
+                            updateInput.setAttribute('onchange', 'encode()');
+                            updateInput.setAttribute('id', 'updatedImage');
+                            let updateImageLabel = document.createElement('label');
+                            updateImageLabel.classList.add('custom-file-label');
+                            updateImageLabel.setAttribute('for', 'updatedImage');
+                            updateImageLabel.innerText = 'Image';
+                            imageDiv.appendChild(updateInput);
+                            imageDiv.appendChild(updateImageLabel);
+                            cell2.appendChild(imageDiv);
+                            anchor = document.createElement('a');
+                            anchor.appendChild(document.createTextNode('Show current image'));
+                            if (out.imageurl.substr(0, 4) == 'http') {
+                                anchor.href = out.imageurl;
+                            } else {
+                                anchor.href = `https://${out.imageurl}`;
+                            }
+                            anchor.target = '_blank';
+                            cell3.appendChild(anchor);
+                            row.appendChild(cell1);
+                            row.appendChild(cell2);
+                            row.appendChild(cell3);
+                            manageTable.appendChild(row);
+                        }else{
+                            row = document.createElement('tr');
+                            cell1 = document.createElement('th');
+                            cell1.setAttribute('scope', 'row');
+                            cell2 = document.createElement('td');
+                            cell1.appendChild(document.createTextNode('Image:'));
+                            let imageDiv = document.createElement('div');
+                            imageDiv.classList.add('custom-file'); 
+                            updateInput = document.createElement('input');
+                            updateInput.classList.add('custom-file-input');
+                            updateInput.classList.add('img');
+                            updateInput.setAttribute('accept', 'image/png, image/jpeg');
+                            updateInput.setAttribute('type', 'file');
+                            updateInput.setAttribute('onchange', 'encode()');
+                            updateInput.setAttribute('id', 'updatedImage');
+                            let updateImageLabel = document.createElement('label');
+                            updateImageLabel.classList.add('custom-file-label');
+                            updateImageLabel.setAttribute('for', 'updatedImage');
+                            updateImageLabel.innerText = 'Image';
+                            imageDiv.appendChild(updateInput);
+                            imageDiv.appendChild(updateImageLabel);
+                            cell2.appendChild(imageDiv);
+                            row.appendChild(cell1);
+                            row.appendChild(cell2);
+                            manageTable.appendChild(row);
+                        }
+                    }
                 }).catch(err => { console.error(err) });
             }
             let button2 = document.createElement('button');
@@ -558,5 +875,22 @@ function getEvents(){
             tr.appendChild(td3);
             tableEventList.appendChild(tr);
         });
+    });
+}
+function initDatepicker() {
+    var startdate_input = $('input[name="startdate"]'); //our date input has the name "startdate"
+    var enddate_input = $('input[name="enddate"]'); //our date input has the name "startdate"
+    var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
+    startdate_input.datepicker({
+        format: 'yyyy-mm-dd',
+        container: container,
+        todayHighlight: true,
+        autoclose: true,
+    });
+    enddate_input.datepicker({
+        format: 'yyyy-mm-dd',
+        container: container,
+        todayHighlight: true,
+        autoclose: true,
     });
 }
