@@ -51,6 +51,14 @@ function backToEvents() {
     document.getElementById('event').style.display = 'none';
 }
 
+function backToEvent(){
+    // $('#leaveModal').click(function(){
+    //     $('#testmodal').modal('hide');
+    // });
+    document.getElementById('manage').style.display = 'none';
+    document.getElementById('event').style.display = 'grid';
+}
+
 function newEvent(e) {
     e.preventDefault();
     console.log("create Element");
@@ -877,6 +885,7 @@ function getEvents() {
         });
     });
 }
+
 function initDatepicker() {
     var startdate_input = $('input[name="startdate"]'); //our date input has the name "startdate"
     var enddate_input = $('input[name="enddate"]'); //our date input has the name "startdate"
