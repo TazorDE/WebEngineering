@@ -52,9 +52,6 @@ function backToEvents() {
 }
 
 function backToEvent(){
-    // $('#leaveModal').click(function(){
-    //     $('#testmodal').modal('hide');
-    // });
     document.getElementById('manage').style.display = 'none';
     document.getElementById('event').style.display = 'grid';
 }
