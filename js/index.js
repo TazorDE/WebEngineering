@@ -1,5 +1,5 @@
 let user = "";
-let url, image;
+let url, image, updatedId;
 let eventName, eventLocation, orgMail, startDate, startTime, endDate, endTime, allday, status, website, extra, categories;
 
 function submitUserID(e) {
@@ -38,6 +38,7 @@ function switchToMain() {
     document.getElementById('loginArea').style.display = 'none';
     document.getElementById('eventList').style.display = 'none';
     document.getElementById('categoryManagement').style.display = 'none';
+    document.getElementById('manage').style.display = 'none';
     document.getElementById('mainContent').style.display = 'grid';
 }
 
@@ -51,7 +52,7 @@ function backToEvents() {
     document.getElementById('event').style.display = 'none';
 }
 
-function backToEvent(){
+function backToEvent() {
     document.getElementById('manage').style.display = 'none';
     document.getElementById('event').style.display = 'grid';
 }
@@ -79,7 +80,7 @@ function setTime(e) {
     endTime = document.getElementById('endtime').value;
     allday = document.getElementById('allDay').checked;
 
-    if (validateDate()) {
+    if (validateDate(startDate, endDate, startTime, endTime)) {
 
         document.getElementById('mainContent').style.display = 'none';
         document.getElementById('setEventTime').style.display = 'none';
@@ -92,13 +93,13 @@ function setTime(e) {
     }
 }
 
-function validateTime() {
-    let startHr = parseInt(startTime.substr(0, 2)); //validated through html pattern
-    let startMin = parseInt(startTime.substr(3, 2));
-    let endHr = parseInt(endTime.substr(0, 2));
-    let endMin = parseInt(endTime.substr(3, 2));
+function validateTime(sTime, eTime) {
+    let startHr = parseInt(sTime.substr(0, 2)); //validated through html pattern
+    let startMin = parseInt(sTime.substr(3, 2));
+    let endHr = parseInt(eTime.substr(0, 2));
+    let endMin = parseInt(eTime.substr(3, 2));
 
-    if (startTime == endTime) {
+    if (sTime == eTime) {
         console.log("start time is equal to end time");
         return true;
     } else if (startHr > endHr) {
@@ -122,22 +123,22 @@ function validateTime() {
     }
 }
 
-function validateDate() {
-    let startYear = parseInt(startDate.substr(0, 4), 10);
-    let startMonth = parseInt(startDate.substr(5, 2), 10);
-    let startDay = parseInt(startDate.substr(8, 2), 10);
-    let endYear = parseInt(endDate.substr(0, 4), 10);
-    let endMonth = parseInt(endDate.substr(5, 2), 10);
-    let endDay = parseInt(endDate.substr(8, 2), 10);
+function validateDate(sDate, eDate, sTime, eTime) {
+    let startYear = parseInt(sDate.substr(0, 4), 10);
+    let startMonth = parseInt(sDate.substr(5, 2), 10);
+    let startDay = parseInt(sDate.substr(8, 2), 10);
+    let endYear = parseInt(eDate.substr(0, 4), 10);
+    let endMonth = parseInt(eDate.substr(5, 2), 10);
+    let endDay = parseInt(eDate.substr(8, 2), 10);
 
-    console.log(startDate);
+    console.log(sDate);
     console.log(startYear + ',' + startMonth + ',' + startDay);
     console.log(endYear + ',' + endMonth + ',' + endDay);
 
     if (startYear == endYear) {
         if (startMonth == endMonth) {
             if (startDay == endDay) {
-                if (validateTime()) {
+                if (validateTime(sTime, eTime)) {
                     return true;
                 } else {
                     document.getElementById('timeWarning').style.display = 'grid';
@@ -192,13 +193,55 @@ function getExtras(e) {
 }
 
 function encode() {
-    console.log(document.getElementById('image').files);
     let file = document.getElementById('image').files;
     if (file.length > 0) {
         let fileLoaded = file[0];
         const reader = new FileReader();
         reader.onloadend = function (e) {
-            image = e.target.result;
+            // console.log("result: " + e.target.result);
+            //calculate file size
+            let size;
+            if (e.target.result.slice(-2) == "==") {
+                size = (e.target.result.length * (3 / 4)) - 2;
+            } else {
+                size = (e.target.result.length * (3 / 4)) - 1;
+            }
+            // console.log(size);
+            //check if file size exceeds maximum
+            if (size >= 500000) {
+                console.error("chosen image is too large");
+                //visual feedback
+                $('#imgErrModal').modal('show');
+                image = null;
+            } else {
+                image = e.target.result;
+            }
+        }
+        reader.readAsDataURL(fileLoaded);
+    }
+}
+
+function encodeUpdate() {
+    let file = document.getElementById('updatedImage').files;
+    if (file.length > 0) {
+        let fileLoaded = file[0];
+        const reader = new FileReader();
+        reader.onloadend = function (e) {
+            //calculate file size
+            if (e.target.result.slice(-2) == "==") {
+                size = (e.target.result.length * (3 / 4)) - 2;
+            } else {
+                size = (e.target.result.length * (3 / 4)) - 1;
+            }
+            //check if file size exceeds maximum
+            if (size >= 500000) {
+                console.error("chosen image is too large");
+                //visual feedback
+                $('#imgErrModal').modal('show');
+                image = null;
+            } else {
+                image = e.target.result;
+            }
         }
         reader.readAsDataURL(fileLoaded);
         console.log(image);
@@ -223,7 +266,13 @@ function addCategory(e, id) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-    }).then((response) => response.json()).then((out) => {
+    }).then((response) => {
+        console.log("Status:" + response.status);
+        if (response.status != 200) {
+            $('#errModal').modal('show');
+        }
+        return response.json();
+    }).then((out) => {
         select.innerHTML += `<option id="Select${out.id}" value="${out.id}">${out.name}</option>`;
         let tr = document.createElement('tr');
         tr.id = `CategoryList${out.id}`;
@@ -240,6 +289,11 @@ function addCategory(e, id) {
         button.onclick = function () {
             fetch(`${url}/categories/${out.id}`, {
                 method: 'DELETE',
+            }).then((response) => {
+                console.log("Statuss:" + response.status);
+                if (response.status != 204) {
+                    $('#errModal').modal('show');
+                }
             }).catch(err => {
                 console.log(err);
             });
@@ -284,10 +338,15 @@ function buildAndSubmitJSON() {
         body: JSON.stringify(sending)
     }).then((response) => {
         console.log(response);
-        response.json();
+        console.log("Status:" + response.status);
+        if (response.status != 200) {
+            $('#errModal').modal('show');
+        }
+        return response.json();
     }).then((out) => {
         console.log(out);
     }).catch((err) => { console.log(err) });
+    image = null;
 }
 
 function getData() {
@@ -295,7 +354,15 @@ function getData() {
     let table = document.getElementById('table');
     table.innerHTML = '<tr><th>Name</th><th>Delete</th></tr>';
     //get categories
-    fetch(`${url}/categories`, { cache: 'no-cache' }).then((res) => res.json()).then((out) => {
+    fetch(`${url}/categories`, {
+        cache: 'no-cache'
+    }).then((res) => {
+        console.log("Status:" + res.status);
+        if (res.status != 200) {
+            $('#errModal').modal('show');
+        }
+        return res.json();
+    }).then((out) => {
         out.forEach(element => {
             select.innerHTML += `<option value="${element.id}">${element.name}</option>`;
             let tr = document.createElement('tr');
@@ -313,6 +380,11 @@ function getData() {
             button.onclick = function () {
                 fetch(`${url}/categories/${element.id}`, {
                     method: 'DELETE',
+                }).then((response) => {
+                    console.log("Status:" + response.status);
+                    if (response.status != 204) {
+                        $('#errModal').modal('show');
+                    }
                 }).catch(err => {
                     console.log(err);
                 });
@@ -341,6 +413,9 @@ function getEvents() {
     }).then(async (res) => {
         console.log(res);
         let data = await res.json();
+        if (res.status != 200) {
+            $('#errModal').modal('show');
+        }
         console.log(data);
         return data;
     }).then((result) => {
@@ -358,12 +433,22 @@ function getEvents() {
             button.classList.add('btn-sm');
             button.onclick = function () {
                 document.getElementById('eventTable').innerHTML = '<tr><th scope="col">Description</th><th scope="col">Content</th></tr>';
-
                 console.log(element.id);
-                fetch(`${url}/events/${element.id}`).then(async (res) => { let data = await res.json(); return data }).then((out) => {
+                updateId = element.id;
+                console.log(updateId);
+
+                fetch(`${url}/events/${element.id}`).then(async (res) => {
+                    let data = await res.json();
+                    console.log("Status:" + res.status);
+                    if (res.status != 200) {
+                        $('#errModal').modal('show');
+                    }
+                    return data;
+                }).then((out) => {
                     document.getElementById('eventList').style.display = 'none';
                     document.getElementById('event').style.display = 'grid';
                     let eventTable = document.getElementById('eventTable');
+                    console.log('allday: ' + out.allday);
                     //event title
                     let row = document.createElement('tr');
                     row.id = out.title;
@@ -396,7 +481,7 @@ function getEvents() {
                     cell1 = document.createElement('th');
                     cell1.setAttribute('scope', 'row');
                     cell2 = document.createElement('td');
-                    title = document.createTextNode('Event organizer');
+                    title = document.createTextNode('Organizer');
                     content = document.createTextNode(out.organizer);
                     cell1.appendChild(title);
                     cell2.appendChild(content);
@@ -533,6 +618,7 @@ function getEvents() {
                         row.appendChild(cell2);
                         eventTable.appendChild(row);
                     }
+                    //Edit the Event
                     document.getElementById('eventEdit').onclick = function () {
                         //go to event edit div
                         document.getElementById('manage').style.display = 'grid';
@@ -547,6 +633,7 @@ function getEvents() {
                         cell2 = document.createElement('td');
                         cell1.appendChild(document.createTextNode('Event title:'));
                         let updateInput = document.createElement('input');
+                        updateInput.setAttribute('onkeyup', 'lengthChecker(this)');
                         updateInput.classList.add('form-control');
                         updateInput.setAttribute('required', 'true');
                         updateInput.setAttribute('id', 'updatedTitle');
@@ -594,25 +681,25 @@ function getEvents() {
                         cell1.appendChild(document.createTextNode('Start time:'));
                         updateInput = document.createElement('input');
                         updateInput.classList.add('form-control');
-                        updateInput.setAttribute('id', 'updateStartdate');
+                        updateInput.setAttribute('id', 'updatedStartdate');
                         updateInput.setAttribute('name', 'startdate');
                         updateInput.setAttribute('placeholder', 'DD/MM/YYYY');
-                        updateInput.setAttribute('value', out.start.substr(0,10));
-                        updateInput.setAttribute('required','true');
+                        updateInput.setAttribute('value', out.start.substr(0, 10));
+                        updateInput.setAttribute('required', 'true');
                         updateTimeDiv = document.createElement('div');
                         updateTimeDiv.classList.add('input-group');
                         updateTimeDiv.classList.add('clockpicker');
-                        updateTimeDiv.setAttribute('data-placement','top');
-                        updateTimeDiv.setAttribute('data-align','top');
-                        updateTimeDiv.setAttribute('data-autoclose','true');
+                        updateTimeDiv.setAttribute('data-placement', 'top');
+                        updateTimeDiv.setAttribute('data-align', 'top');
+                        updateTimeDiv.setAttribute('data-autoclose', 'true');
                         updateTimeInput = document.createElement('input');
                         updateTimeInput.setAttribute('type', 'text');
-                        updateTimeInput.setAttribute('id','starttime');
+                        updateTimeInput.setAttribute('id', 'updatedStarttime');
                         updateTimeInput.classList.add('form-control');
                         updateTimeInput.setAttribute('pattern', '[0-9]{2}:[0-9]{2}');
-                        updateTimeInput.setAttribute('placeholder','hh:mm');
-                        updateTimeInput.setAttribute('required','true');
-                        updateTimeInput.setAttribute('value',out.start.substr(11,5));
+                        updateTimeInput.setAttribute('placeholder', 'hh:mm');
+                        updateTimeInput.setAttribute('required', 'true');
+                        updateTimeInput.setAttribute('value', out.start.substr(11, 5));
                         updateTimeDiv.appendChild(updateTimeInput);
                         cell2.appendChild(updateInput);
                         cell3.appendChild(updateTimeDiv);
@@ -629,25 +716,25 @@ function getEvents() {
                         cell1.appendChild(document.createTextNode('End time:'));
                         updateInput = document.createElement('input');
                         updateInput.classList.add('form-control');
-                        updateInput.setAttribute('id', 'updateEnddate');
+                        updateInput.setAttribute('id', 'updatedEnddate');
                         updateInput.setAttribute('name', 'enddate');
                         updateInput.setAttribute('placeholder', 'DD/MM/YYYY');
-                        updateInput.setAttribute('value', out.end.substr(0,10));
-                        updateInput.setAttribute('required','true');
+                        updateInput.setAttribute('value', out.end.substr(0, 10));
+                        updateInput.setAttribute('required', 'true');
                         updateTimeDiv = document.createElement('div');
                         updateTimeDiv.classList.add('input-group');
                         updateTimeDiv.classList.add('clockpicker');
-                        updateTimeDiv.setAttribute('data-placement','top');
-                        updateTimeDiv.setAttribute('data-align','top');
-                        updateTimeDiv.setAttribute('data-autoclose','true');
+                        updateTimeDiv.setAttribute('data-placement', 'top');
+                        updateTimeDiv.setAttribute('data-align', 'top');
+                        updateTimeDiv.setAttribute('data-autoclose', 'true');
                         updateTimeInput = document.createElement('input');
                         updateTimeInput.setAttribute('type', 'text');
-                        updateTimeInput.setAttribute('id','endtime');
+                        updateTimeInput.setAttribute('id', 'updatedEndtime');
                         updateTimeInput.classList.add('form-control');
                         updateTimeInput.setAttribute('pattern', '[0-9]{2}:[0-9]{2}');
-                        updateTimeInput.setAttribute('placeholder','hh:mm');
-                        updateTimeInput.setAttribute('required','true');
-                        updateTimeInput.setAttribute('value',out.end.substr(11,5));
+                        updateTimeInput.setAttribute('placeholder', 'hh:mm');
+                        updateTimeInput.setAttribute('required', 'true');
+                        updateTimeInput.setAttribute('value', out.end.substr(11, 5));
                         updateTimeDiv.appendChild(updateTimeInput);
                         cell2.appendChild(updateInput);
                         cell3.appendChild(updateTimeDiv);
@@ -656,7 +743,38 @@ function getEvents() {
                         row.appendChild(cell3);
                         manageTable.appendChild(row);
                         initDatepicker();
-                        $('.clockpicker').clockpicker(); 
+                        $('.clockpicker').clockpicker();
+                        //allday
+                        row = document.createElement('tr');
+                        row.id = 'out.allday';
+                        cell1 = document.createElement('th');
+                        cell1.setAttribute('scope', 'row');
+                        cell2 = document.createElement('td');
+                        title = document.createTextNode('Event duration');
+                        let contentDiv = document.createElement('div');
+                        contentDiv.classList.add('custom-control');
+                        contentDiv.classList.add('custom-switch');
+                        content = document.createElement('input');
+                        content.setAttribute('type', 'checkbox');
+                        content.setAttribute('id', 'updatedAllday');
+                        content.setAttribute('onclick', 'disableTime()');
+                        if (out.allday == true) {
+                            content.setAttribute('checked', 'true');
+                            document.getElementById('updatedStarttime').disabled = true;
+                            document.getElementById('updatedEndtime').disabled = true;
+                        }
+                        content.classList.add('custom-control-input');
+                        label = document.createElement('label');
+                        label.classList.add('custom-control-label');
+                        label.setAttribute('for', 'updatedAllday');
+                        label.innerText = 'Whole day?';
+                        contentDiv.appendChild(content);
+                        contentDiv.appendChild(label);
+                        cell1.appendChild(title);
+                        cell2.appendChild(contentDiv);
+                        row.appendChild(cell1);
+                        row.appendChild(cell2);
+                        manageTable.appendChild(row);
                         //availability
                         row = document.createElement('tr');
                         cell1 = document.createElement('th');
@@ -667,18 +785,18 @@ function getEvents() {
                         updateInput.classList.add('custom-select');
                         updateInput.setAttribute('required', 'true');
                         updateInput.setAttribute('id', 'updatedStatus');
-                        if(out.status == 'Free'){
+                        if (out.status == 'Free') {
                             updateInput.innerHTML += '<option value="Free" selected>Free</option>';
                             updateInput.innerHTML += '<option value="Busy">Busy</option>';
-                            updateInput.innerHTML += '<option value="Tentative">Tentative</option>';    
-                        }else if(out.status == 'Busy'){
+                            updateInput.innerHTML += '<option value="Tentative">Tentative</option>';
+                        } else if (out.status == 'Busy') {
                             updateInput.innerHTML += '<option value="Free">Free</option>';
                             updateInput.innerHTML += '<option value="Busy" selected>Busy</option>';
-                            updateInput.innerHTML += '<option value="Tentative">Tentative</option>';    
-                        }else if(out.status == 'Tentative'){
+                            updateInput.innerHTML += '<option value="Tentative">Tentative</option>';
+                        } else if (out.status == 'Tentative') {
                             updateInput.innerHTML += '<option value="Free">Free</option>';
                             updateInput.innerHTML += '<option value="Busy">Busy</option>';
-                            updateInput.innerHTML += '<option value="Tentative"selected>Tentative</option>';    
+                            updateInput.innerHTML += '<option value="Tentative"selected>Tentative</option>';
                         }
                         cell2.appendChild(updateInput);
                         row.appendChild(cell1);
@@ -714,7 +832,7 @@ function getEvents() {
                             manageTable.appendChild(row);
                         }
                         //extra/information/comment
-                        console.log('extra: '+ out.extra);
+                        console.log('extra: ' + out.extra);
                         if (out.extra != null) {
                             row = document.createElement('tr');
                             cell1 = document.createElement('th');
@@ -746,7 +864,7 @@ function getEvents() {
                             manageTable.appendChild(row);
                         }
                         //categories
-                        if(out.categories.length > 0){
+                        if (out.categories.length > 0) {
                             row = document.createElement('tr');
                             cell1 = document.createElement('th');
                             cell1.setAttribute('scope', 'row');
@@ -757,22 +875,34 @@ function getEvents() {
                             updateInput.classList.add('form-control');
                             updateInput.setAttribute('id', 'updatedCategories');
                             updateInput.setAttribute('multiple', '');
-                            fetch(`${url}/categories`, { cache: 'no-cache' }).then((res) => res.json()).then((ret) => {
+                            fetch(`${url}/categories`, { cache: 'no-cache' }).then((res) => {
+                                console.log("Status:" + res.status);
+                                if (res.status != 200) {
+                                    $('#errModal').modal('show');
+                                }
+                                return res.json();
+                            }).then((ret) => {
                                 ret.forEach(element => {
-                                    document.getElementById('updatedCategories').innerHTML += `<option value="${element.id}">${element.name}</option>`;
-                                    out.categories.forEach((e)=>{
-                                        if(e.id == element.id){
+                                    let added = false;
+                                    out.categories.forEach((e) => {
+                                        if (e.id == element.id) {
                                             cell33.appendChild(document.createTextNode(`${e.name} `));
+                                            document.getElementById('updatedCategories').innerHTML += `<option value="${element.id}" selected="selected">${element.name}</option>`;
+                                            added = true;
                                         }
                                     });
+                                    if (!added) {
+                                        document.getElementById('updatedCategories').innerHTML += `<option value="${element.id}">${element.name}</option>`;
+                                    }
                                 }
-                            )});
+                                )
+                            });
                             cell2.appendChild(updateInput);
                             row.appendChild(cell1);
                             row.appendChild(cell2);
                             row.appendChild(cell33);
                             manageTable.appendChild(row);
-                        }else{
+                        } else {
                             row = document.createElement('tr');
                             cell1 = document.createElement('th');
                             cell1.setAttribute('scope', 'row');
@@ -782,41 +912,51 @@ function getEvents() {
                             updateInput.classList.add('form-control');
                             updateInput.setAttribute('id', 'updatedCategories');
                             updateInput.setAttribute('multiple', '');
-                            fetch(`${url}/categories`, { cache: 'no-cache' }).then((res) => res.json()).then((out) => {
+                            fetch(`${url}/categories`, { cache: 'no-cache' }).then((res) => {
+                                console.log("Status:" + res.status);
+                                if (res.status != 200) {
+                                    $('#errModal').modal('show');
+                                }
+                                return res.json();
+                            }).then((out) => {
                                 out.forEach(element => {
                                     document.getElementById('updatedCategories').innerHTML += `<option value="${element.id}">${element.name}</option>`;
                                 }
-                            )});
+                                )
+                            });
                             cell2.appendChild(updateInput);
                             row.appendChild(cell1);
                             row.appendChild(cell2);
                             manageTable.appendChild(row);
                         }
                         //image
-                        if(out.imageurl != null){
+                        if (out.imageurl != null) {
                             row = document.createElement('tr');
+                            row.setAttribute('id', 'imagerow');
                             cell1 = document.createElement('th');
                             cell1.setAttribute('scope', 'row');
                             cell2 = document.createElement('td');
                             cell3 = document.createElement('td');
                             cell1.appendChild(document.createTextNode('Image:'));
                             let imageDiv = document.createElement('div');
-                            imageDiv.classList.add('custom-file'); 
+                            imageDiv.classList.add('custom-file');
                             updateInput = document.createElement('input');
                             updateInput.classList.add('custom-file-input');
                             updateInput.classList.add('img');
                             updateInput.setAttribute('accept', 'image/png, image/jpeg');
                             updateInput.setAttribute('type', 'file');
-                            updateInput.setAttribute('onchange', 'encode()');
+                            updateInput.setAttribute('onchange', 'encodeUpdate()');
                             updateInput.setAttribute('id', 'updatedImage');
                             let updateImageLabel = document.createElement('label');
                             updateImageLabel.classList.add('custom-file-label');
                             updateImageLabel.setAttribute('for', 'updatedImage');
+                            updateImageLabel.setAttribute('id', 'updateImageUpload');
                             updateImageLabel.innerText = 'Image';
                             imageDiv.appendChild(updateInput);
                             imageDiv.appendChild(updateImageLabel);
                             cell2.appendChild(imageDiv);
                             anchor = document.createElement('a');
+                            anchor.setAttribute('id', 'showImage')
                             anchor.appendChild(document.createTextNode('Show current image'));
                             if (out.imageurl.substr(0, 4) == 'http') {
                                 anchor.href = out.imageurl;
@@ -824,29 +964,42 @@ function getEvents() {
                                 anchor.href = `https://${out.imageurl}`;
                             }
                             anchor.target = '_blank';
+                            let linebreak = document.createElement('br');
+                            let deleteImg = document.createElement('button');
+                            deleteImg.classList.add('btn');
+                            deleteImg.classList.add('btn-primary');
+                            deleteImg.classList.add('btn-sm');
+                            deleteImg.innerText = 'Delete image';
+                            deleteImg.setAttribute('type', 'button');
+                            deleteImg.setAttribute('id', 'deleteImgButton');
+                            deleteImg.setAttribute('data-toggle', 'modal');
+                            deleteImg.setAttribute('data-target', '#delImgModal');
                             cell3.appendChild(anchor);
+                            cell3.appendChild(linebreak);
+                            cell3.appendChild(deleteImg);
                             row.appendChild(cell1);
                             row.appendChild(cell2);
                             row.appendChild(cell3);
                             manageTable.appendChild(row);
-                        }else{
+                        } else {
                             row = document.createElement('tr');
                             cell1 = document.createElement('th');
                             cell1.setAttribute('scope', 'row');
                             cell2 = document.createElement('td');
                             cell1.appendChild(document.createTextNode('Image:'));
                             let imageDiv = document.createElement('div');
-                            imageDiv.classList.add('custom-file'); 
+                            imageDiv.classList.add('custom-file');
                             updateInput = document.createElement('input');
                             updateInput.classList.add('custom-file-input');
                             updateInput.classList.add('img');
                             updateInput.setAttribute('accept', 'image/png, image/jpeg');
                             updateInput.setAttribute('type', 'file');
-                            updateInput.setAttribute('onchange', 'encode()');
+                            updateInput.setAttribute('onchange', 'encodeUpdate()');
                             updateInput.setAttribute('id', 'updatedImage');
                             let updateImageLabel = document.createElement('label');
                             updateImageLabel.classList.add('custom-file-label');
                             updateImageLabel.setAttribute('for', 'updatedImage');
+                            updateImageLabel.setAttribute('id', 'updateImageUpload');
                             updateImageLabel.innerText = 'Image';
                             imageDiv.appendChild(updateInput);
                             imageDiv.appendChild(updateImageLabel);
@@ -856,7 +1009,12 @@ function getEvents() {
                             manageTable.appendChild(row);
                         }
                     }
-                }).catch(err => { console.error(err) });
+                }).catch(err => {
+                    console.error(err);
+                    if (res.status != 200) {
+                        $('#errModal').modal('show');
+                    }
+                });
             }
             let button2 = document.createElement('button');
             button2.innerText = 'delete';
@@ -866,12 +1024,16 @@ function getEvents() {
             button2.onclick = function () {
                 fetch(`${url}/events/${element.id}`, {
                     method: 'DELETE',
+                }).then((res) => {
+                    console.log("Status:" + res.status);
+                    if (res.status != 204) {
+                        $('#errModal').modal('show');
+                    }
                 }).catch(err => {
                     console.log(err);
                 });
                 document.getElementById(`EventList${element.id}`).style.display = 'none';
             }
-
             td1.appendChild(name);
             td2.appendChild(button);
             td3.appendChild(button2);
@@ -883,9 +1045,43 @@ function getEvents() {
     });
 }
 
+function deleteImage() {
+    document.getElementById('showImage').style.display = 'none';
+    document.getElementById('deleteImgButton').style.display = 'none';
+    // event.preventDefault();
+    fetch(`${url}/images/${updateId}`, {
+        method: 'DELETE'
+    }).then((result) => {
+        console.log(result);
+        console.log("Status:" + result.status);
+        if (result.status != 204) {
+            $('#errModal').modal('show');
+        }
+        result.json;
+    }).then((res) => {
+        console.log(res);
+    }).catch((err) => {
+        console.error(err);
+    });
+    $('#delImgModal').close()
+}
+
+function disableTime() {
+    if (document.getElementById('updatedAllday').checked == true) {
+        document.getElementById('updatedStarttime').disabled = true;
+        document.getElementById('updatedStarttime').value = '00:00';
+        document.getElementById('updatedEndtime').disabled = true;
+        document.getElementById('updatedEndtime').value = '23:59';
+        document.getElementById('updatedEnddate').value = document.getElementById('updatedStartdate').value;
+    } else {
+        document.getElementById('updatedStarttime').disabled = false;
+        document.getElementById('updatedEndtime').disabled = false;
+    }
+}
+
 function initDatepicker() {
     var startdate_input = $('input[name="startdate"]'); //our date input has the name "startdate"
-    var enddate_input = $('input[name="enddate"]'); //our date input has the name "startdate"
+    var enddate_input = $('input[name="enddate"]'); //our date input has the name "enddate"
     var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
     startdate_input.datepicker({
         format: 'yyyy-mm-dd',
@@ -899,4 +1095,89 @@ function initDatepicker() {
         todayHighlight: true,
         autoclose: true,
     });
+}
+
+function updateEntry() {
+    let updatedStartdate = document.getElementById('updatedStartdate').value;
+    let updatedEnddate = document.getElementById('updatedEnddate').value;
+    let updatedStarttime = document.getElementById('updatedStarttime').value;
+    let updatedEndtime = document.getElementById('updatedEndtime').value;
+    let updatedCategoriesData = $("#updatedCategories").val();
+    let updatedCategories = [];
+
+    if (updatedCategoriesData != null) {
+        updatedCategoriesData.forEach(e => {
+            let data = { "id": e }
+            updatedCategories.push(data);
+        })
+    }
+    if (validateDate(updatedStartdate, updatedEnddate, updatedStarttime, updatedEndtime)) {
+        let updatedSTime = updatedStartdate + 'T' + updatedStarttime;
+        let updatedETime = updatedEnddate + 'T' + updatedEndtime;
+        let updateJSON = {
+            "title": document.getElementById('updatedTitle').value,
+            "location": document.getElementById('updatedLocation').value,
+            "organizer": document.getElementById('updatedOrganizer').value,
+            "start": updatedSTime,
+            "end": updatedETime,
+            "status": document.getElementById('updatedStatus').value,
+            "allday": document.getElementById('updatedAllday').checked,
+            "webpage": document.getElementById('updatedWebsite').value,
+            "imagedata": image,
+            "categories": updatedCategories,
+            "extra": document.getElementById('updatedExtra').value,
+        }
+        console.log(updateJSON);
+        document.getElementById('timeWarning').style.display = 'none';
+        fetch(`${url}/events/${updateId}`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateJSON)
+        }).then((response) => {
+            console.log(response);
+            console.log("Status:" + response.status);
+            if (response.status != 200) {
+                $('#errModal').modal('show');
+            }
+            response.json;
+        }).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.error(err);
+        });
+    } else {
+        document.getElementById('timeWarning').style.display = 'grid';
+    }
+    switchToMain();
+    image = null;
+}
+
+let categorymaxchars = 30;
+let titlemaxchars = 50;
+let webmaxchars = 100;
+
+function categoryNameChecker(element) {
+    // console.log(element.value.length);
+    if (element.value.length > categorymaxchars) {
+        element.value = element.value.substr(0, categorymaxchars);
+    }
+}
+function lengthChecker(element) {
+    // console.log(element.value.length);
+    if (element.value.length > titlemaxchars) {
+        element.value = element.value.substr(0, titlemaxchars);
+    }
+}
+function webChecker(element) {
+    // console.log(element.value.length);
+    if (element.value.length > webmaxchars) {
+        element.value = element.value.substr(0, webmaxchars);
+    }
+}
+
+function restrictImageSize() {
+
 }
