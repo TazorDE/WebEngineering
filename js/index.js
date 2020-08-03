@@ -1177,7 +1177,3 @@ function webChecker(element) {
         element.value = element.value.substr(0, webmaxchars);
     }
 }
-
-function restrictImageSize() {
-
-}
