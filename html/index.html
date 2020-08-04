@@ -6,12 +6,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- favicon from realfavicongenerator.net-->
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#000000">
+    <link rel="shortcut icon" href="/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <!-- CSS -->
     <link rel="stylesheet" href="../css/index.css">
 
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
@@ -48,7 +59,6 @@
     <!-- Bootstrap Time Plugin -->
     <link rel="stylesheet" href="../css/clockpicker.css" />
     <script src="../js/clockpicker.js"></script>
-
 
     <title>World's best calendar app!</title>
 </head>
@@ -90,12 +100,11 @@
                     <div id="actionsBody" class="card-body">
                         <div class="btn-group-vertical">
                             <button type="button" id="createEntry" onclick="switchCreateEntry()"
-                                class="btn btn-primary">Create Entry</button> <br>
+                                class="btn btn-primary">Create Entry</button>
                             <button type="button" id="createEntry" onclick="switchCategories()"
-                                class="btn btn-primary">Manage Categories</button><br>
+                                class="btn btn-primary">Manage Categories</button>
                             <button type="button" id="createEntry" onclick="showEvents(), getEvents()"
-                                class="btn btn-primary">Show
-                                events</button><br>
+                                class="btn btn-primary">Show events</button>
                         </div>
                     </div>
                 </div>
@@ -114,14 +123,15 @@
                             <div class="form-group">
                                 <!-- Name, location, email -->
                                 <label class="col-form-label" for="inputEventName">Eventname</label>
-                                <input type="text" class="form-control" onkeyup="lengthChecker(this)" id="inputEventName" name="inputEventName"
-                                    required>
+                                <input type="text" class="form-control" onkeyup="lengthChecker(this)"
+                                    id="inputEventName" name="inputEventName" required>
                                 <label class="col-form-label" for="inputEventLocation">Eventlocation</label>
-                                <input type="text" class="form-control" onkeyup="lengthChecker(this)" id="inputEventLocation"
-                                    name="inputEventLocation" required>
+                                <input type="text" class="form-control" onkeyup="lengthChecker(this)"
+                                    id="inputEventLocation" name="inputEventLocation" required>
                                 <label for="inputEventEmail">Organizer email address</label>
-                                <input type="email" class="form-control" onkeyup="lengthChecker(this)" id="inputEventEmail" name="inputEventEmail"
-                                    required placeholder="Enter email"
+                                <input type="email" class="form-control" onkeyup="lengthChecker(this)"
+                                    id="inputEventEmail" name="inputEventEmail" required placeholder="Enter email"
+
                                     style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
                                 <label></label>
                             </div>
@@ -245,8 +255,9 @@
                                     <!-- webpage -->
                                     <div class="form-group">
                                         <label class="col-form-label" for="webpage">Enter a associated webpage</label>
-                                        <input type="text" class="form-control" onkeyup="webChecker(this)" placeholder="www.example.com"
-                                            id="webpage">
+                                        <input type="text" class="form-control" onkeyup="webChecker(this)"
+                                            placeholder="www.example.com" id="webpage">
+
                                     </div>
                                     <!-- image -->
                                     <div class="form-group">
@@ -263,15 +274,15 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <label class="col-form-label" for="newCategory">New Category</label>
-                                            <input type="text" class="form-control" onkeyup="categoryNameChecker(this)" placeholder="category name"
-                                                id="newCategory">
+                                            <input type="text" class="form-control" onkeyup="categoryNameChecker(this)"
+                                                placeholder="category name" id="newCategory">
+                                            <button class="btn btn-primary btn-sm" style="margin: auto;"
+                                                onclick="addCategory(event, 'newCategory')">Create new category</button>
                                         </div>
-                                        <button class="btn btn-primary btn-sm" style="margin: auto;"
-                                            onclick="addCategory(event, 'newCategory')">Create new category</button>
                                         <br>
                                         <div class="form-group">
-                                            <label for="categorySelect">CTRL+click to choose one or multiple
-                                                categories</label>
+                                            <label for="categorySelect" id="OSchange"></label>
+
                                             <select multiple="" class="form-control" id="categorySelect">
                                             </select>
                                         </div>

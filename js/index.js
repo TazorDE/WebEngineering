@@ -13,6 +13,16 @@ function submitUserID(e) {
     //build the URL to the Webservice
     buildURL();
     getData();
+    if(window.navigator.platform.includes('Win')){
+        console.log('Windows');
+        document.getElementById('OSchange').innerText = 'CTRL+click to choose one or multiple categories';
+    }else if(window.navigator.platform.includes('Mac')){
+        console.log('MacOs');
+        document.getElementById('OSchange').innerText = '⌘+click to choose one or multiple categories';
+    }else{
+        console.log('Other');
+        document.getElementById('OSchange').innerText = 'CTRL/⌘+click to choose one or multiple categories';
+    }
 }
 
 function buildURL() {
@@ -346,6 +356,18 @@ function buildAndSubmitJSON() {
     }).then((out) => {
         console.log(out);
     }).catch((err) => { console.log(err) });
+    //reset all input fields
+    document.getElementById('inputEventName').value = null;
+    document.getElementById('inputEventLocation').value = null;
+    document.getElementById('inputEventEmail').value = null;
+    document.getElementById('startdate').value = null;
+    document.getElementById('starttime').value = null;
+    document.getElementById('enddate').value = null;
+    document.getElementById('endtime').value = null;
+    document.getElementById('allDay').checked = false;
+    document.getElementById('status').value = 'Free';
+    document.getElementById('webpage').value = null;
+    document.getElementById('extra').value = null;
     image = null;
 }
 
