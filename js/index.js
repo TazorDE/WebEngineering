@@ -15,10 +15,13 @@ function submitUserID(e) {
     getData();
     if(window.navigator.platform.includes('Win')){
         console.log('Windows');
+        document.getElementById('OSchange').innerText = 'CTRL+click to choose one or multiple categories';
     }else if(window.navigator.platform.includes('Mac')){
         console.log('MacOs');
+        document.getElementById('OSchange').innerText = '⌘+click to choose one or multiple categories';
     }else{
         console.log('Other');
+        document.getElementById('OSchange').innerText = 'CTRL/⌘+click to choose one or multiple categories';
     }
 }
 
