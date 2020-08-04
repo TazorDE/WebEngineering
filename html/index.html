@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,53 +8,471 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/index.css">
 
-    <title>Hello, world!</title>
-</head>
-
-<body>
-    <!--Navbar-->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a class="navbar-brand" href="#">Calendar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarColor01">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
-    </nav>
-
-
-    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Date Plugin -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+    <script>
+        //initialise datepicker plugin
+        $(document).ready(function initDatepicker() {
+            var startdate_input = $('input[name="startdate"]'); //our date input has the name "startdate"
+            var enddate_input = $('input[name="enddate"]'); //our date input has the name "startdate"
+            var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
+            startdate_input.datepicker({
+                format: 'yyyy-mm-dd',
+                container: container,
+                todayHighlight: true,
+                autoclose: true,
+            });
+            enddate_input.datepicker({
+                format: 'yyyy-mm-dd',
+                container: container,
+                todayHighlight: true,
+                autoclose: true,
+            });
+        })
+    </script>
+    <!-- Bootstrap Time Plugin -->
+    <link rel="stylesheet" href="../css/clockpicker.css" />
+    <script src="../js/clockpicker.js"></script>
+
+
+    <title>World's best calendar app!</title>
+</head>
+
+<body>
+    <!--Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Calendar</a>
+    </nav>
+
+    <!--Login Area-->
+    <div id="loginArea" class="container h-100">
+        <div class="row align-items-center h-100">
+            <div class="col-6 mx-auto">
+                <div class="card text-white bg-primary mb-3 mx-auto" style="max-width: 20rem;">
+                    <div class="card-header">Please enter your UserID</div>
+                    <div class="card-body">
+                        <form class="card-form" onsubmit="return submitUserID(event)">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-form-label" for="inputUserID">User ID</label>
+                                    <input type="text" class="form-control" id="inputUserID" value="2693148" required>
+                                </div>
+                                <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 ">
+                <div id="actions" class="card text-white bg-primary mb-3 mx-auto" style="width: 13rem;">
+                    <div class="card-header">Actions</div>
+                    <div id="actionsBody" class="card-body">
+                        <div class="btn-group-vertical">
+                            <button type="button" id="createEntry" onclick="switchCreateEntry()"
+                                class="btn btn-primary">Create Entry</button> <br>
+                            <button type="button" id="createEntry" onclick="switchCategories()"
+                                class="btn btn-primary">Manage Categories</button><br>
+                            <button type="button" id="createEntry" onclick="showEvents(), getEvents()"
+                                class="btn btn-primary">Show
+                                events</button><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Entry -->
+    <div id="createEvent" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="card text-white bg-primary mb-3 mx-auto" style="width: 40rem;">
+                <div class="card-header">Create Event</div>
+                <div class="card-body">
+                    <form class="card-form" onsubmit="return newEvent(event)">
+                        <fieldset>
+                            <div class="form-group">
+                                <!-- Name, location, email -->
+                                <label class="col-form-label" for="inputEventName">Eventname</label>
+                                <input type="text" class="form-control" onkeyup="lengthChecker(this)" id="inputEventName" name="inputEventName"
+                                    required>
+                                <label class="col-form-label" for="inputEventLocation">Eventlocation</label>
+                                <input type="text" class="form-control" onkeyup="lengthChecker(this)" id="inputEventLocation"
+                                    name="inputEventLocation" required>
+                                <label for="inputEventEmail">Organizer email address</label>
+                                <input type="email" class="form-control" onkeyup="lengthChecker(this)" id="inputEventEmail" name="inputEventEmail"
+                                    required placeholder="Enter email"
+                                    style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
+                                <label></label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="timeWarning" class="alert alert-dismissible alert-warning"
+        style="display: none; margin: auto; width: 30%;">
+        <h4 class="alert-heading">Warning!</h4>
+        <p class="mb-0"> Please make sure the times you entered are even possible. </p>
+    </div>
+    <div id="setEventTime" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100">
+            <div class="col-6 mx-auto">
+                <div class="card text-white bg-primary mb-3 mx-auto" style="max-width: 30rem;">
+                    <div class="card-header">Enter the time and date of the event</div>
+                    <div class="card-body">
+                        <form class="card-form" onsubmit="return setTime(event)">
+                            <fieldset>
+                                <div class="form-group">
+                                    <!-- Date and Time -->
+                                    <label class="col-form-label" for="startdate">Start date</label>
+                                    <input class="form-control" id="startdate" name="startdate" placeholder="DD/MM/YYYY"
+                                        type="text" required />
+
+                                    <!-- <div class="custom-control custom-switch">
+                                        <br>
+                                        <input type="checkbox" data-toggle="switch" class="custom-control-input"
+                                            id="multiDay">
+                                        <label class="custom-control-label" for="multiDay">Multiple days?</label>
+                                    </div> -->
+                                    <!-- <script>
+                                        $("#multiDay").change(function () {
+                                            if ($(this).prop("checked") == true) {
+                                                document.getElementById('allDay').disabled = true;
+                                                document.getElementById('allDay').value = true;
+                                                document.getElementById('starttime').disabled = true;
+                                                document.getElementById('starttime').value = '00:00';
+                                                document.getElementById('endtime').disabled = true;
+                                                document.getElementById('endtime').value = '23:59';
+
+                                            } else {
+                                                document.getElementById('allDay').disabled = false;
+                                                document.getElementById('allDay').value = false;
+                                                document.getElementById('starttime').disabled = false;
+                                                document.getElementById('endtime').disabled = false;
+                                            }
+                                        });
+                                    </script> -->
+                                    <div class="custom-control custom-switch">
+                                        <br>
+                                        <input type="checkbox" class="custom-control-input" id="allDay">
+                                        <label class="custom-control-label" for="allDay">Whole day?</label>
+                                    </div>
+                                    <script>
+                                        $("#allDay").change(function () {
+                                            if ($(this).prop("checked") == true) {
+                                                document.getElementById('starttime').disabled = true;
+                                                document.getElementById('starttime').value = '00:00';
+                                                document.getElementById('endtime').disabled = true;
+                                                document.getElementById('endtime').value = '23:59';
+                                                document.getElementById('enddate').value = document.getElementById('startdate').value;
+                                            } else {
+                                                document.getElementById('starttime').disabled = false;
+                                                document.getElementById('endtime').disabled = false;
+                                            }
+                                        });
+                                    </script>
+
+                                    <label class="col-form-label" for="starttime">Start time</label>
+                                    <div class="input-group clockpicker" data-placement="top" data-align="top"
+                                        data-autoclose="true">
+                                        <input type="text" id="starttime" class="form-control"
+                                            pattern="[0-9]{2}:[0-9]{2}" placeholder="hh:mm" required>
+                                    </div>
+                                    <label class="col-form-label" for="enddate">End date</label>
+                                    <input class="form-control" id="enddate" name="enddate" placeholder="DD/MM/YYY"
+                                        type="text" required />
+                                    <label class="col-form-label" for="endtime">End time</label>
+                                    <div class="input-group clockpicker" data-placement="top" data-align="top"
+                                        data-autoclose="true">
+                                        <input type="text" id="endtime" class="form-control" pattern="[0-9]{2}:[0-9]{2}"
+                                            placeholder="hh:mm" required>
+                                    </div>
+                                    <!-- add clockpicker script -->
+                                    <script type="text/javascript">
+                                        $('.clockpicker').clockpicker();
+                                    </script>
+
+                                </div>
+                                <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="additionalEventinfo" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100">
+            <div class="col-6 mx-auto">
+                <div id="actions" class="card text-white bg-primary mb-3 mx-auto" style="max-width: 30rem;">
+                    <div class="card-header">Additional Infos</div>
+                    <div id="actionsBody" class="card-body">
+                        <form class="card-form" onsubmit="return getExtras(event)">
+                            <fieldset>
+                                <div class="form-group">
+                                    <!-- status -->
+                                    <div class="form-group">
+                                        <label for="status">Select your staus during this event</label>
+                                        <select id="status" class="custom-select" required>
+                                            <option value="Free">Free</option>
+                                            <option value="Busy">Busy</option>
+                                            <option value="Tentative">Tentative</option>
+                                        </select>
+                                    </div>
+                                    <!-- webpage -->
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="webpage">Enter a associated webpage</label>
+                                        <input type="text" class="form-control" onkeyup="webChecker(this)" placeholder="www.example.com"
+                                            id="webpage">
+                                    </div>
+                                    <!-- image -->
+                                    <div class="form-group">
+                                        <label class="col-form-label">Choose image to upload</label> <br>
+                                        <div class="input-group mb-3">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input img"
+                                                    accept="image/png, image/jpeg" onchange="encode()" id="image">
+                                                <label class="custom-file-label" for="image">Image</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- categories -->
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="newCategory">New Category</label>
+                                            <input type="text" class="form-control" onkeyup="categoryNameChecker(this)" placeholder="category name"
+                                                id="newCategory">
+                                        </div>
+                                        <button class="btn btn-primary btn-sm" style="margin: auto;"
+                                            onclick="addCategory(event, 'newCategory')">Create new category</button>
+                                        <br>
+                                        <div class="form-group">
+                                            <label for="categorySelect">CTRL+click to choose one or multiple
+                                                categories</label>
+                                            <select multiple="" class="form-control" id="categorySelect">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- comment -->
+                                    <div class="form-group">
+                                        <label for="extra">Comment/description</label>
+                                        <textarea class="form-control" id="extra" maxlength="2000" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category management -->
+    <div id="categoryManagement" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 ">
+                <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 25rem;">
+                    <div class="card-header">Manage categories</div>
+                    <div id="manageCategoriesBody" class="card-body">
+                        <label class="col-form-label" for="newCategory">New Category</label>
+                        <input type="text" class="form-control" onkeyup="categoryNameChecker(this)"
+                            placeholder="category name" id="newCategoryManager">
+                        <button class="btn btn-primary btn-sm" onclick="addCategory(event,'newCategoryManager')">Create
+                            new category</button>
+                        <br><br>
+                        <table id="table" class="table table-hover">
+                            <tr>
+                                <th>Name</th>
+                                <th>Delete</th>
+                            </tr>
+                        </table>
+                        <button class="btn btn-primary" onclick="switchToMain()">Back</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event List -->
+    <div id="eventList" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 ">
+                <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 25rem;">
+                    <div class="card-header">Event list</div>
+                    <div id="manageCategoriesBody" class="card-body">
+                        <table id="tableEventList" class="table table-hover">
+                            <tr>
+                                <th>Name</th>
+                                <th>more</th>
+                                <th>Delete</th>
+                            </tr>
+                        </table>
+                        <button class="btn btn-primary" onclick="switchToMain()">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="event" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 ">
+                <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 35rem;">
+                    <div class="card-header">Event list</div>
+                    <div id="eventBody" class="card-body">
+                        <table id="eventTable" class="table table-hover">
+                            <tr>
+                                <th scope="col">Description</th>
+                                <th scope="col">Content</th>
+                            </tr>
+                        </table>
+                        <button class="btn btn-primary" onclick="backToEvents()">Back</button>
+                        <button class="btn btn-primary" id="eventEdit">Edit this event</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="manage" class="container h-100" style="display: none;">
+        <div class="row align-items-center h-100 mx-auto">
+            <div class="col-6 ">
+                <div id="manageCategories" class="card text-white bg-primary mb-3 mx-auto" style="width: 40rem;">
+                    <div class="card-header">Edit Event</div>
+                    <div id="categoryBody" class="card-body">
+                        <form class="card-form">
+                            <fieldset>
+                                <table id="manageTable" class="table table-hover">
+                                    <tr>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Edit content</th>
+                                        <th scope="col"> </th>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                        </form>
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#modal">Back</button>
+                        <button type="submit" class="btn btn-primary" onclick="updateEntry()">Update entry</button>
+
+                        <div class="modal" id="modal">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Warning</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to leave this page?</p>
+                                        <p>Your changes won't be saved.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="leaveModal" class="btn btn-primary"
+                                            onclick="backToEvent()" data-dismiss="modal">Leave</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Stay</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal" id="delImgModal">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Warning</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Do you really want to delete this image?</p>
+                                        <p>This can not be undone.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="leaveModal" class="btn btn-primary"
+                                            onclick="deleteImage()" data-dismiss="modal">Delete</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Abort</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modals -->
+    <div class="modal" id="errModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>There has been an error communicating with the Server. Please check your input and try again
+                        later</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="leaveModal" class="btn btn-primary" onclick="switchToMain()"
+                        data-dismiss="modal">Return</button>
+                    <!-- <button type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Abort</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="imgErrModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>The image is too large. Please choose another one or skip this step.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../js/index.js"></script>
+
 </body>
 
 </html>
