@@ -6,7 +6,7 @@ function submitUserID(e) {
     e.preventDefault();
     //get form input
     user = document.getElementById('inputUserID').value;
-    console.log(user);
+    // console.log(user);
     //change displayed cards
     document.getElementById('loginArea').style.display = 'none';
     document.getElementById('mainContent').style.display = 'grid';
@@ -14,13 +14,13 @@ function submitUserID(e) {
     buildURL();
     getData();
     if(window.navigator.platform.includes('Win')){
-        console.log('Windows');
+        // console.log('Windows');
         document.getElementById('OSchange').innerText = 'CTRL+click to choose one or multiple categories';
     }else if(window.navigator.platform.includes('Mac')){
-        console.log('MacOs');
+        // console.log('MacOs');
         document.getElementById('OSchange').innerText = '⌘+click to choose one or multiple categories';
     }else{
-        console.log('Other');
+        // console.log('Other');
         document.getElementById('OSchange').innerText = 'CTRL/⌘+click to choose one or multiple categories';
     }
 }
@@ -29,7 +29,7 @@ function buildURL() {
     if (!(user.length === 0)) {
         //build URL
         url = `http://dhbw.radicalsimplicity.com/calendar/${user}`;
-        console.log(url);
+        // console.log(url);
     }
 }
 
@@ -69,12 +69,12 @@ function backToEvent() {
 
 function newEvent(e) {
     e.preventDefault();
-    console.log("create Element");
+    // console.log("create Element");
     eventName = document.getElementById('inputEventName').value;
     eventLocation = document.getElementById('inputEventLocation').value;
     orgMail = document.getElementById('inputEventEmail').value;
 
-    console.log(eventName, eventLocation, orgMail,);
+    // console.log(eventName, eventLocation, orgMail,);
     document.getElementById('setEventTime').style.display = 'grid';
     document.getElementById('createEvent').style.display = 'none';
     document.getElementById('timeWarning').style.display = 'none';
@@ -83,7 +83,7 @@ function newEvent(e) {
 
 function setTime(e) {
     e.preventDefault();
-    console.log("setTime " + document.getElementById('starttime').value);
+    // console.log("setTime " + document.getElementById('starttime').value);
     startDate = document.getElementById('startdate').value;
     startTime = document.getElementById('starttime').value;
     endDate = document.getElementById('enddate').value;
@@ -110,24 +110,24 @@ function validateTime(sTime, eTime) {
     let endMin = parseInt(eTime.substr(3, 2));
 
     if (sTime == eTime) {
-        console.log("start time is equal to end time");
+        // console.log("start time is equal to end time");
         return true;
     } else if (startHr > endHr) {
         console.error("start hr is after end hr");
         return false;
     } else if (startHr < endHr) {
-        console.log("start hr is before end hr");
+        // console.log("start hr is before end hr");
         return true;
     } else if (startHr == endHr) {
-        console.log("start hr is equal to end hr");
+        // console.log("start hr is equal to end hr");
         if (startMin > endMin) {
             console.error("start min is after end min");
             return false;
         } else if (startMin < endMin) {
-            console.log("start min is before end min");
+            // console.log("start min is before end min");
             return true;
         } else {
-            console.log("start min is equal to end min");
+            // console.log("start min is equal to end min");
             return true;
         }
     }
@@ -141,9 +141,9 @@ function validateDate(sDate, eDate, sTime, eTime) {
     let endMonth = parseInt(eDate.substr(5, 2), 10);
     let endDay = parseInt(eDate.substr(8, 2), 10);
 
-    console.log(sDate);
-    console.log(startYear + ',' + startMonth + ',' + startDay);
-    console.log(endYear + ',' + endMonth + ',' + endDay);
+    // console.log(sDate);
+    // console.log(startYear + ',' + startMonth + ',' + startDay);
+    // console.log(endYear + ',' + endMonth + ',' + endDay);
 
     if (startYear == endYear) {
         if (startMonth == endMonth) {
@@ -183,7 +183,7 @@ function getExtras(e) {
     website = document.getElementById('webpage').value;
     extra = document.getElementById('extra').value;
 
-    console.log("category " + category);
+    // console.log("category " + category);
     if (category != null) {
         category.forEach(e => {
             let data = {
@@ -254,7 +254,7 @@ function encodeUpdate() {
             }
         }
         reader.readAsDataURL(fileLoaded);
-        console.log(image);
+        // console.log(image);
     }
 }
 
@@ -277,7 +277,7 @@ function addCategory(e, id) {
         },
         body: JSON.stringify(data)
     }).then((response) => {
-        console.log("Status:" + response.status);
+        // console.log("Status:" + response.status);
         if (response.status != 200) {
             $('#errModal').modal('show');
         }
@@ -300,12 +300,12 @@ function addCategory(e, id) {
             fetch(`${url}/categories/${out.id}`, {
                 method: 'DELETE',
             }).then((response) => {
-                console.log("Statuss:" + response.status);
+                // console.log("Statuss:" + response.status);
                 if (response.status != 204) {
                     $('#errModal').modal('show');
                 }
             }).catch(err => {
-                console.log(err);
+                console.error(err);
             });
             document.getElementById(`CategoryList${out.id}`).style.display = 'none';
             let del = document.getElementById(`Select${out.id}`);
@@ -338,7 +338,7 @@ function buildAndSubmitJSON() {
         "categories": categories,
         "extra": extra
     }
-    console.log(sending);
+    // console.log(sending);
     fetch(`${url}/events`, {
         method: "POST",
         headers: {
@@ -347,15 +347,13 @@ function buildAndSubmitJSON() {
         },
         body: JSON.stringify(sending)
     }).then((response) => {
-        console.log(response);
-        console.log("Status:" + response.status);
+        // console.log(response);
+        // console.log("Status:" + response.status);
         if (response.status != 200) {
             $('#errModal').modal('show');
         }
         return response.json();
-    }).then((out) => {
-        console.log(out);
-    }).catch((err) => { console.log(err) });
+    }).catch((err) => { console.error(err) });
     //reset all input fields
     document.getElementById('inputEventName').value = null;
     document.getElementById('inputEventLocation').value = null;
@@ -379,7 +377,7 @@ function getData() {
     fetch(`${url}/categories`, {
         cache: 'no-cache'
     }).then((res) => {
-        console.log("Status:" + res.status);
+        // console.log("Status:" + res.status);
         if (res.status != 200) {
             $('#errModal').modal('show');
         }
@@ -403,12 +401,12 @@ function getData() {
                 fetch(`${url}/categories/${element.id}`, {
                     method: 'DELETE',
                 }).then((response) => {
-                    console.log("Status:" + response.status);
+                    // console.log("Status:" + response.status);
                     if (response.status != 204) {
                         $('#errModal').modal('show');
                     }
                 }).catch(err => {
-                    console.log(err);
+                    console.error(err);
                 });
                 document.getElementById(`CategoryList${element.id}`).style.display = 'none';
                 let del = document.getElementById(`Select${out.id}`);
@@ -423,7 +421,7 @@ function getData() {
 
             table.appendChild(tr);
         });
-    }).catch(err => console.log(err));
+    }).catch(err => console.error(err));
 }
 
 function getEvents() {
@@ -433,12 +431,12 @@ function getEvents() {
     fetch(`${url}/events`, {
         cache: 'no-store'
     }).then(async (res) => {
-        console.log(res);
+        // console.log(res);
         let data = await res.json();
         if (res.status != 200) {
             $('#errModal').modal('show');
         }
-        console.log(data);
+        // console.log(data);
         return data;
     }).then((result) => {
         result.forEach(element => {
@@ -455,13 +453,13 @@ function getEvents() {
             button.classList.add('btn-sm');
             button.onclick = function () {
                 document.getElementById('eventTable').innerHTML = '<tr><th scope="col">Description</th><th scope="col">Content</th></tr>';
-                console.log(element.id);
+                // console.log(element.id);
                 updateId = element.id;
-                console.log(updateId);
+                // console.log(updateId);
 
                 fetch(`${url}/events/${element.id}`).then(async (res) => {
                     let data = await res.json();
-                    console.log("Status:" + res.status);
+                    // console.log("Status:" + res.status);
                     if (res.status != 200) {
                         $('#errModal').modal('show');
                     }
@@ -470,7 +468,7 @@ function getEvents() {
                     document.getElementById('eventList').style.display = 'none';
                     document.getElementById('event').style.display = 'grid';
                     let eventTable = document.getElementById('eventTable');
-                    console.log('allday: ' + out.allday);
+                    // console.log('allday: ' + out.allday);
                     //event title
                     let row = document.createElement('tr');
                     row.id = out.title;
@@ -597,9 +595,9 @@ function getEvents() {
                         let names;
                         out.categories.forEach((res) => {
                             if (names != undefined) {
-                                names += ` ${res.name}`
+                                names += ` ${res.name},`
                             } else {
-                                names = res.name;
+                                names = `${res.name},`;
                             }
                         });
                         let name = document.createTextNode(names);
@@ -854,7 +852,7 @@ function getEvents() {
                             manageTable.appendChild(row);
                         }
                         //extra/information/comment
-                        console.log('extra: ' + out.extra);
+                        // console.log('extra: ' + out.extra);
                         if (out.extra != null) {
                             row = document.createElement('tr');
                             cell1 = document.createElement('th');
@@ -891,14 +889,14 @@ function getEvents() {
                             cell1 = document.createElement('th');
                             cell1.setAttribute('scope', 'row');
                             cell2 = document.createElement('td');
-                            cell33 = document.createElement('td');
+                            // cell33 = document.createElement('td');
                             cell1.appendChild(document.createTextNode('Event categories:'));
                             updateInput = document.createElement('select');
                             updateInput.classList.add('form-control');
                             updateInput.setAttribute('id', 'updatedCategories');
                             updateInput.setAttribute('multiple', '');
                             fetch(`${url}/categories`, { cache: 'no-cache' }).then((res) => {
-                                console.log("Status:" + res.status);
+                                // console.log("Status:" + res.status);
                                 if (res.status != 200) {
                                     $('#errModal').modal('show');
                                 }
@@ -908,7 +906,7 @@ function getEvents() {
                                     let added = false;
                                     out.categories.forEach((e) => {
                                         if (e.id == element.id) {
-                                            cell33.appendChild(document.createTextNode(`${e.name} `));
+                                            // cell33.appendChild(document.createTextNode(`${e.name} `));
                                             document.getElementById('updatedCategories').innerHTML += `<option value="${element.id}" selected="selected">${element.name}</option>`;
                                             added = true;
                                         }
@@ -922,7 +920,7 @@ function getEvents() {
                             cell2.appendChild(updateInput);
                             row.appendChild(cell1);
                             row.appendChild(cell2);
-                            row.appendChild(cell33);
+                            // row.appendChild(cell33);
                             manageTable.appendChild(row);
                         } else {
                             row = document.createElement('tr');
@@ -935,7 +933,7 @@ function getEvents() {
                             updateInput.setAttribute('id', 'updatedCategories');
                             updateInput.setAttribute('multiple', '');
                             fetch(`${url}/categories`, { cache: 'no-cache' }).then((res) => {
-                                console.log("Status:" + res.status);
+                                // console.log("Status:" + res.status);
                                 if (res.status != 200) {
                                     $('#errModal').modal('show');
                                 }
@@ -1047,12 +1045,12 @@ function getEvents() {
                 fetch(`${url}/events/${element.id}`, {
                     method: 'DELETE',
                 }).then((res) => {
-                    console.log("Status:" + res.status);
+                    // console.log("Status:" + res.status);
                     if (res.status != 204) {
                         $('#errModal').modal('show');
                     }
                 }).catch(err => {
-                    console.log(err);
+                    console.error(err);
                 });
                 document.getElementById(`EventList${element.id}`).style.display = 'none';
             }
@@ -1074,14 +1072,12 @@ function deleteImage() {
     fetch(`${url}/images/${updateId}`, {
         method: 'DELETE'
     }).then((result) => {
-        console.log(result);
-        console.log("Status:" + result.status);
+        // console.log(result);
+        // console.log("Status:" + result.status);
         if (result.status != 204) {
             $('#errModal').modal('show');
         }
         result.json;
-    }).then((res) => {
-        console.log(res);
     }).catch((err) => {
         console.error(err);
     });
@@ -1149,7 +1145,7 @@ function updateEntry() {
             "categories": updatedCategories,
             "extra": document.getElementById('updatedExtra').value,
         }
-        console.log(updateJSON);
+        // console.log(updateJSON);
         document.getElementById('timeWarning').style.display = 'none';
         fetch(`${url}/events/${updateId}`, {
             method: "PUT",
@@ -1159,14 +1155,12 @@ function updateEntry() {
             },
             body: JSON.stringify(updateJSON)
         }).then((response) => {
-            console.log(response);
-            console.log("Status:" + response.status);
+            // console.log(response);
+            // console.log("Status:" + response.status);
             if (response.status != 200) {
                 $('#errModal').modal('show');
             }
             response.json;
-        }).then((res) => {
-            console.log(res);
         }).catch((err) => {
             console.error(err);
         });
